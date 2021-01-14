@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head th:insert="base :: head"></head>
+<head>
+    <title>Bibliothèque en ligne - MyLibrary </title>
+    <meta name="description" content="Page d'identification de la bibliothèque en ligne - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="Identification">
+        <div class="container" sec:authorize="isAuthenticated()">
+
+            <p>Vous êtes actuellement connecté (<span sec:authentication="name"></span>).</p>
+            <button type="button" class="btn btn-success" onclick="window.location.href='/logout'">Se Déconnecter</button>
+        </div>
+        <div class="container" sec:authorize="!isAuthenticated()">
+
+            <h1>Page d'identification MyLibrary</h1>
+
+            <form th:action="@{/login}" method="post">
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">email ou mot de passe Invalid</div>
+                </div>
+                <div th:if="${param.logout}">
+                    <div class="alert alert-info">Vous êtes déconnecté.</div>
+                </div>
+                <div class="form-group">
+                    <label for="email"> e-Mail </label>
+                    <input type="text" class="form-control" id="email" name="username" autocomplete="username" placeholder="Adresse e-mail" autofocus="autofocus" required />
+                    <br />
+                </div>
+                <div class="form-group">
+                    <label for="password"> Mot de passe </label>
+                    <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
+                    <br />
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <input type="submit" name="login-submit" id="login-submit" class="form-control btn btn-info" value="S'identifier" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <ul class="list-unstyled">
+                <li><a th:href="@{/creation-compte}">Créer un compte</a></li>
+                <li><a th:href="@{/creation-compte}">Récupérer son mot de passe</a></li>
+            </ul>
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

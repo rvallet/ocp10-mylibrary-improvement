@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" th:href="@{css/style.css}"/>
+    <link rel="icon" href="img/icon.png" th:href="@{img/icon.png}" />
+    <link rel="shortcut icon" href="img/favicon.ico"th:href="@{img/favicon.ico}" />
+    <base href="/">
+    <title>Modification d'un utilisateur - MyLibrary </title>
+    <meta name="description" content="Edit User - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="EditUser">
+        <div class="container">
+
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">e-Mail</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prénom</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Accès</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row"><span th:text="${user.id}">id</span></th>
+                            <td><span th:text="${user.email}">e-Mail</span></td>
+                            <td><span th:text="${user.lastName}">Nom</span></td>
+                            <td><span th:text="${user.firstName}">Prénom</span></td>
+                            <td><span th:text="${#dates.format(user.creationDate, 'dd/MM/yyyy')}">Date</span></td>
+                            <td>
+                                <div class="text-center">
+                                    <form th:action="@{/admin/update-user}" th:object="${user}" method="post">
+                                        <select class="form-control" id="role" name="role" th:value="${role}">
+                                            <option th:each="role : ${roleList}"
+                                                    th:value="${role}"
+                                                    th:utext="${role}"
+                                                    th:selected="${user.role}==${role}"/>
+                                        </select>
+                                        <br />
+                                        <input type="hidden" name="id" th:value="${user?.id}">
+                                        <button class="text-center" type="submit">Mettre à jour</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

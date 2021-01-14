@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" th:href="@{/css/style.css}"/>
+    <link rel="icon" href="img/icon.png" th:href="@{img/icon.png}" />
+    <link rel="shortcut icon" href="img/favicon.ico"th:href="@{img/favicon.ico}" />
+    <base href="/">
+    <title>Mon profil administrateur - MyLibrary </title>
+    <meta name="description" content="Profil Administrateur - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="AdminProfile">
+        <div class="container">
+
+            <!-- 					Menu -->
+            <nav>
+                <div class="nav nav-tabs anchor" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-users-tab"
+                       data-toggle="tab" href="#nav-users"
+                       role="tab" aria-controls="nav-users"
+                       aria-selected="true">Les Utilisateurs
+                    </a>
+                    <a class="nav-item nav-link" id="nav-bookloan-tab"
+                       data-toggle="tab" href="#nav-bookloan"
+                       role="tab" aria-controls="nav-bookloan"
+                       aria-selected="false">Les Emprunts
+                    </a>
+                    <a class="nav-item nav-link" id="nav-history-tab"
+                       data-toggle="tab" href="#nav-history"
+                       role="tab" aria-controls="nav-history"
+                       aria-selected="false">Historique des emprunts
+                    </a>
+                </div>
+            </nav>
+
+            <div class="tab-content" id="nav-tabContent">
+
+                <!-- Les Utilisateurs -->
+                <div class="tab-pane fade show active" id="nav-users" role="tabpanel" aria-labelledby="nav-profil-tab">
+                    <div class="col-md-12" th:if="${usersList!=null and !usersList.isEmpty()}">
+                        <br />
+                        <h3>Tous les utilisateurs</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">e-Mail</th>
+                                    <th scope="col">Nom</th>
+                                    <th scope="col">Prénom</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Accès</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user:${usersList}">
+                                    <th scope="row"><span th:text="${user.id}">id</span></th>
+                                    <td><span th:text="${user.email}">e-Mail</span></td>
+                                    <td><span th:text="${user.lastName}">Nom</span></td>
+                                    <td><span th:text="${user.firstName}">Prénom</span></td>
+                                    <td><span th:text="${#dates.format(user.creationDate, 'dd/MM/yyyy')}">Date</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${user.role}">Accès</span>
+                                            <form th:action="@{/admin/edit-user}" method="get">
+                                                <input type="hidden" name="id" th:value="${user.id}">
+                                                <button class="text-center" type="submit">Modifier</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Les emprunts de Livres -->
+                <div class="tab-pane fade" id="nav-bookloan" role="tabpanel" aria-labelledby="nav-bookloan-tab">
+                    <br />
+                    <div class="col-md-12">
+                        <button class="btn btn-outline-default btn-lg btn-block" type="button" data-toggle="collapse" data-target="#addLoan" aria-expanded="false" aria-controls="addLoan">
+						    <span class="collapsed">
+						        Ajouter un emprunt
+                            </span>
+                            <span class="expanded">
+							    Replier
+							</span>
+                        </button>
+                        <div class="collapse" id="addLoan">
+                            <!-- Ajouter un Emprunt -->
+                            <div class="container text-center">
+                                <br />
+                                <form th:action="@{admin/create-bookLoan}" method="post">
+                                    <div class="form-group row">
+                                        <label for="email" class="col-sm-2 col-form-label">
+                                            eMail de l'utilisateur
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="email" th:name="email" placeholder="Email de l'utilisateur" autofocus="autofocus" required>
+                                            <p class="error-message" th:if="${!#strings.isEmpty(errorUser)}" th:text="${errorUser}">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="isbn" class="col-sm-2 col-form-label">
+                                            Référence ISBN
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="isbn" th:name="isbn" placeholder="Référence ISBN" required>
+                                            <p class="error-message" th:if="${!#strings.isEmpty(errorBook)}" th:text="${errorBook}">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-success" type="submit">
+                                        Valider
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" th:if="${bookLoanList==null or bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Les Emprunts</h3>
+                        <p>Il n'y a aucun emprunt de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookLoanList!=null and !bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Les Emprunts de livres</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de l'emprunt</th>
+                                    <th scope="col">Date d'échéance</th>
+                                    <th scope="col">Retour</th>
+                                    <th scope="col">Utilisateur</th>
+                                    <th scope="col">Prolongation de l'emprunt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookLoan:${bookLoanList}" th:if="${bookLoan.loanStatus != 'Terminé'}">
+                                    <th scope="row"><span th:text="${bookLoan.id}">#</span></th>
+                                    <td><span th:text="${bookLoan.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookLoan.loanStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.startLoan, 'dd/MM/yyyy')}">Date de l'emprunt</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.endLoan, 'dd/MM/yyyy')}">Echéance de l'emprunt</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <div th:if="${bookLoan.returnLoan!=null}">
+                                            <span th:text="${#dates.format(bookLoan.returnLoan, 'dd/MM/yyyy')}">Date de retour</span>
+                                            </div>
+                                            <div>
+                                                <form th:action="@{/admin/update-bookloan}" th:object="${bookLoan}" method="get">
+                                                    <input type="hidden" name="id" th:value="${bookLoan?.id}">
+                                                    <input type="hidden" name="action" th:value="loanclosed">
+                                                    <button class="text-center" type="submit">Valider un retour</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span th:text="${bookLoan.getUser().getEmail()}">Utilisateur</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.getLoanExtended()} ? 'Oui' : 'Non'">Prolongation de l'emprunt</span>
+                                            <div th:if="${!bookLoan.getLoanExtended()}">
+                                                <form th:action="@{/admin/update-bookloan}" th:object="${bookLoan}" method="get">
+                                                    <input type="hidden" name="id" th:value="${bookLoan?.id}">
+                                                    <input type="hidden" name="action" th:value="loanextended">
+                                                    <button class="text-center" type="submit">Prolonger</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historique -->
+                <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+                    <div class="col-md-12" th:if="${bookLoanList==null or bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Les Emprunts</h3>
+                        <p>Il n'y a aucun emprunt de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookLoanList!=null and !bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Les Emprunts de livres</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de l'emprunt</th>
+                                    <th scope="col">Date d'échéance</th>
+                                    <th scope="col">Retour</th>
+                                    <th scope="col">Utilisateur</th>
+                                    <th scope="col">Prolongation de l'emprunt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookLoan:${bookLoanList}">
+                                    <th scope="row"><span th:text="${bookLoan.id}">#</span></th>
+                                    <td><span th:text="${bookLoan.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookLoan.loanStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.startLoan, 'dd/MM/yyyy')}">Date de l'emprunt</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.endLoan, 'dd/MM/yyyy')}">Echéance de l'emprunt</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.returnLoan!=null} ? ${#dates.format(bookLoan.returnLoan, 'dd/MM/yyyy')} : '----'">Date de retour</span>
+                                        </div>
+                                    </td>
+                                    <td><span th:text="${bookLoan.getUser().getEmail()}">Utilisateur</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.getLoanExtended()} ? 'Oui' : 'Non'">Prolongation de l'emprunt</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

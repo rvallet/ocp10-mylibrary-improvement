@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head th:insert="base :: head"></head>
+<head>
+    <title>Création de compte - MyLibrary </title>
+    <meta name="description" content="Page de création de compte - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="AccountCreation">
+        <div class="container" sec:authorize="isAuthenticated()">
+
+            <p>Vous êtes actuellement connecté (<span sec:authentication="name"></span>).</p>
+            <button type="button" class="btn btn-success" onclick="window.location.href='/logout'">Se Déconnecter</button>
+        </div>
+        <div class="container" sec:authorize="!isAuthenticated()">
+            <a class="navbar-brand" href="#" th:href="@{/}">Formulaire de création de compte</a>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div th:if="${param.success}">
+                        <div class="alert alert-info">Vôtre compte à été créé avec succès !!!</div>
+                        <button type="button" class="btn btn-success" onclick="window.location.href='/login'">Se Connecter</button>
+                    </div>
+                    <div th:if="!${param.success}">
+                        <h1>Mes Informations</h1>
+                        <form th:action="@{/creation-compte}" th:object="${user}" method="post">
+
+                            <p class="error-message" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
+
+<!--                            <div class="form-group" th:classappend="${#fields.hasErrors('pseudo')}? 'has-error':''">
+                                <label for="pseudo" class="control-label">Pseudo *</label>
+                                <input id="pseudo" class="form-control" autocomplete="username" th:field="*{pseudo}" placeholder="Pseudonyme (Votre nom d'utilisateur sur le site)" autofocus="autofocus" required />
+                                <p class="error-message" th:each="error : ${#fields.errors('pseudo')}" th:text="${error}">Validation error</p>
+                            </div>-->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}? 'has-error':''">
+                                <label for="lastName" class="control-label">Nom </label>
+                                <input id="lastName" class="form-control" autocomplete="family-name" th:field="*{lastName}" placeholder="Nom de famille (n'apparait pas sur le site)" />
+                                <p class="error-message" th:each="error : ${#fields.errors('lastName')}" th:text="${error}">Validation error</p>
+                            </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}? 'has-error':''">
+                                <label for="firstName" class="control-label">Prénom </label>
+                                <input id="firstName" class="form-control" autocomplete="given-name" th:field="*{firstName}" placeholder="Prénom (n'apparait pas sur le site)" />
+                                <p class="error-message" th:each="error: ${#fields.errors('firstName')}" th:text="${error}">Validation error</p>
+                            </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('email')}? 'has-error':''">
+                                <label for="email" class="control-label">eMail*</label>
+                                <input id="email" class="form-control" autocomplete="username" th:field="*{email}" placeholder="Adresse e-Mail" required />
+                                <p class="error-message" th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
+                            </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('password')}? 'has-error':''">
+                                <label for="password" class="control-label">Mot de passe*</label>
+                                <input id="password" class="form-control" type="password" autocomplete="new-password" th:field="*{password}" placeholder=">8 caractères (1 chiffre, 1 spécial & 1 majuscule obligatoire)" />
+                                <p class="error-message" th:each="error : ${#fields.errors('password')}" th:text="${error}">Validation error</p>
+                            </div>
+                            <!-- 							<div class="form-group" th:classappend="${#fields.hasErrors('confirmPassword')}? 'has-error':''"> -->
+                            <!-- 								<label for="confirmPassword" class="control-label">Confirmation du mot de passe*</label> -->
+                            <!-- 								<input id="confirmPassword" class="form-control" type="password" th:field="*{confirmPassword}" required/> -->
+                            <!-- 								<p class="error-message" th:each="error : ${#fields.errors('confirmPassword')}" th:text="${error}">Validation error</p> -->
+                            <!-- 							</div> -->
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Créer mon compte</button>
+                                <span>Vous avez déjà un compte? <a href="/" th:href="@{/login}">S'identifier</a></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

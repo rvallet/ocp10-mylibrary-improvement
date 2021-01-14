@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" th:href="@{css/style.css}"/>
+    <link rel="icon" href="img/icon.png" th:href="@{img/icon.png}" />
+    <link rel="shortcut icon" href="img/favicon.ico"th:href="@{img/favicon.ico}" />
+    <base href="/">
+    <title>Bibliothèque en ligne - MyLibrary </title>
+    <meta name="description" content="Page d'erreur de la bibliothèque en ligne - MyLibrary"/>
+</head>
+
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="Error">
+        <div class="container">
+
+            Une erreur <span th:text="${status}">Inconnue</span> est survenu lors de votre navigation !
+            <hr />
+            <table>
+                <tr>
+                    <td>Status</td>
+                    <td th:text="${status}"/>
+                </tr>
+                <tr>
+                    <td>Error</td>
+                    <td th:text="${error}"/>
+                </tr>
+                <tr>
+                    <td>Date</td>
+                    <td th:text="${timestamp}"/>
+                </tr>
+                <tr>
+                    <td>Path</td>
+                    <td th:text="${path}"/>
+                </tr>
+            </table>
+            <hr />
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

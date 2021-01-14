@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" th:href="@{css/style.css}"/>
+    <link rel="icon" href="img/icon.png" th:href="@{img/icon.png}" />
+    <link rel="shortcut icon" href="img/favicon.ico"th:href="@{img/favicon.ico}" />
+    <base href="/">
+    <title>Mon profil utilisateur - MyLibrary </title>
+    <meta name="description" content="Profil Utilisateur - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="UserProfile">
+        <div class="container">
+
+            <!-- 					Menu -->
+            <nav>
+                <div class="nav nav-tabs anchor" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-profil-tab"
+                       data-toggle="tab" href="#nav-profil"
+                       role="tab" aria-controls="nav-profil"
+                       aria-selected="true">Mon Profil
+                    </a>
+                    <a class="nav-item nav-link" id="nav-bookloan-tab"
+                       data-toggle="tab" href="#nav-bookloan"
+                       role="tab" aria-controls="nav-bookloan"
+                       aria-selected="false">Mes Emprunts en cours
+                    </a>
+                    <a class="nav-item nav-link" id="nav-history-tab"
+                       data-toggle="tab" href="#nav-history"
+                       role="tab" aria-controls="nav-history"
+                       aria-selected="false">Mon Historique
+                    </a>
+                </div>
+            </nav>
+
+            <div class="tab-content" id="nav-tabContent">
+
+                <!-- 					Mon Profil -->
+                <div class="tab-pane fade show active" id="nav-profil" role="tabpanel" aria-labelledby="nav-profil-tab">
+                    <div class="col-md-12" th:value="${user}">
+                        <br />
+                        <h2>Profil Utilisateur</h2>
+                        </br >
+                        <div class="input-group mb-3 col-md-9">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">Nom</label>
+                            </div>
+                            <input type="text" class="form-control" th:placeholder="${user?.lastName}" disabled />
+                        </div>
+                        <div class="input-group mb-3 col-md-9">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">Prénom</label>
+                            </div>
+                            <input type="text" class="form-control" th:placeholder="${user?.firstName}" disabled />
+                        </div>
+                        <div class="input-group mb-3 col-md-9">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">e-Mail</label>
+                            </div>
+                            <input type="text" class="form-control" th:placeholder="${user?.email}" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 					Mes emprunts de Livres -->
+                <div class="tab-pane fade" id="nav-bookloan" role="tabpanel" aria-labelledby="nav-bookloan-tab">
+                    <div class="col-md-12" th:if="${bookLoanList==null or bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Mes Emprunts</h3>
+                        <p>Vous n'avez aucun emprunt de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookLoanList!=null and !bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Mes Emprunts de livres</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de l'emprunt</th>
+                                    <th scope="col">Echéance</th>
+                                    <th scope="col">Prolongation de l'emprunt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookLoan:${bookLoanList}" th:if="${bookLoan.loanStatus != 'Terminé'}">
+                                    <th scope="row"><span th:text="${bookLoan.id}">#</span></th>
+                                    <td><span th:text="${bookLoan.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookLoan.loanStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.startLoan, 'dd/MM/yyyy')}">Date de l'emprunt</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.endLoan, 'dd/MM/yyyy')}">Echéance</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.getLoanExtended()} ? 'Oui' : 'Non'">Prolongation de l'emprunt</span>
+                                            <div th:if="${!bookLoan.getLoanExtended()}">
+                                                <form th:action="@{/user/update-bookloan}" th:object="${bookLoan}" method="get">
+                                                    <input type="hidden" name="id" th:value="${bookLoan?.id}">
+                                                    <input type="hidden" name="action" th:value="loanextended">
+                                                    <button class="text-center" type="submit">Prolonger</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 					Mon Historique d'emprunts de Livres -->
+                <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+                    <div class="col-md-12" th:if="${bookLoanList==null or bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Mon historique</h3>
+                        <p>Vous n'avez aucun emprunt de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookLoanList!=null and !bookLoanList.isEmpty()}">
+                        <br />
+                        <h3>Mon historique</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de l'emprunt</th>
+                                    <th scope="col">Echéance</th>
+                                    <th scope="col">Date de retour</th>
+                                    <th scope="col">Prolongation de l'emprunt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookLoan:${bookLoanList}">
+                                    <th scope="row"><span th:text="${bookLoan.id}">#</span></th>
+                                    <td><span th:text="${bookLoan.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookLoan.loanStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.startLoan, 'dd/MM/yyyy')}">Date de l'emprunt</span></td>
+                                    <td><span th:text="${#dates.format(bookLoan.endLoan, 'dd/MM/yyyy')}">Echéance</span></td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.returnLoan!=null} ? ${#dates.format(bookLoan.returnLoan, 'dd/MM/yyyy')} : '----'">Date de retour</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <span th:text="${bookLoan.getLoanExtended()} ? 'Oui' : 'Non'">Prolongation de l'emprunt</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

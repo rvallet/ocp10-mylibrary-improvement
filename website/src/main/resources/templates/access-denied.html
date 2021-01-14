@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head th:insert="base :: head"></head>
+<head>
+    <title>Accès refusé - MyLibrary </title>
+    <meta name="description" content="Accès refusé aux utilisateurs n'ayant pas les droits nécéssaires - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="AccessDenied">
+        <div class="container">
+
+            <h1>Accès Refusé à cette page</h1>
+            <h2>
+                Vous devez être connecté à un compte possédant les droits nécéssaires à l'affichage de cette page.
+            </h2>
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head th:insert="base :: head"></head>
+<head>
+    <title>Bibliothèque en ligne - MyLibrary </title>
+    <meta name="description" content="Page d'accueil de la bibliothèque en ligne - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="Accueil">
+        <div class="container">
+
+            <h1>Page d'accueil - Bienvenue sur MyLibrary v1.0</h1>
+
+            <!-- SLIDER START -->
+            <br />
+            <div id="home-carousel" class="carousel slide" data-ride="carousel">
+                <ul class="carousel-indicators">
+                    <li data-target="#home-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#home-carousel" data-slide-to="1"></li>
+                    <li data-target="#home-carousel" data-slide-to="2"></li>
+                    <li data-target="#home-carousel" data-slide-to="3"></li>
+                </ul>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <a th:href="@{/livres}">
+                            <img th:src="@{/img/carousel/slide1_MyLibrary_600x200.jpg}" th:alt="'Mercedes Lackey - MyLibrary'" alt="" width="600" height="200">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>Mercedes Lackey</h3>
+                            <p>Découvrez la collection</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <a th:href="@{/livres}">
+                            <img th:src="@{/img/carousel/slide2_MyLibrary_600x200.jpg}" th:alt="'Titres à la une - MyLibrary'" alt="" width="600" height="200">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>Titres à la une</h3>
+                            <p>Découvrez les titres les plus lus</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <a th:href="@{/livres}">
+                            <img th:src="@{/img/carousel/slide3_MyLibrary_600x200.jpg}" th:alt="'Chroniques de la tour - MyLibrary'" alt="" width="600" height="200">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>Laura Gallego Garcia</h3>
+                            <p>Découvrez les chroniques de la tour</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <a th:href="@{/livres}">
+                            <img th:src="@{/img/carousel/slide4_MyLibrary_600x200.jpg}" th:alt="'StarCraft 2 Editor'" alt="" width="600" height="200">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>StarCraft 2 Editor</h3>
+                            <p>Création et conception des cartes</p>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#home-carousel" data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </a>
+                <a class="carousel-control-next" href="#home-carousel" data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </a>
+            </div>
+            <br />
+            <!-- SLIDER END -->
+            <h2>Retrouvez les ouvrages disponible au prêt avec MyLibrary</h2>
+            <br />
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in mi non lacus tincidunt bibendum.</p>
+
+            <p>Quisque tincidunt scelerisque arcu, vel ornare lacus egestas ornare.
+            Aenean rhoncus aliquam velit, nec pharetra neque lobortis eu. Vestibulum ante ipsum primis in faucibus orci
+            luctus et ultrices posuere cubilia curae; Suspendisse rhoncus et mi et scelerisque. Suspendisse hendrerit
+            consectetur nisi, commodo sagittis tortor suscipit vel. Morbi efficitur eget arcu et euismod. Pellentesque
+            suscipit non lectus ut suscipit. Praesent nulla neque, accumsan fermentum mattis ut, molestie et urna.
+            Pellentesque vitae augue ut tortor dignissim condimentum vel vitae massa. Ut feugiat facilisis imperdiet.
+            Pellentesque mattis placerat semper. Proin euismod sodales nunc, vel aliquam ex. Nunc aliquet id ipsum a
+            sollicitudin. Nunc nec blandit magna.</p>
+
+
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{base}">
+
+<head th:insert="base :: head"></head>
+<head>
+    <title>Emprunter un livre - MyLibrary </title>
+    <meta name="description" content="Détail du livre - MyLibrary"/>
+</head>
+<body>
+<th:block th:insert="base :: header">...</th:block>
+<main layout:fragment="main" role="main" th:remove="tag">
+    <section id="Livre">
+        <div class="container">
+            <div class="col-md-12">
+                <h1>Informations sur l'ouvrage</h1>
+
+                <div class="col-md-12" th:value="${book}">
+                    <H2><span th:text="${book.title}">Titre</span></H2>
+                    <hr />
+                    <small th:if="${book.author}" class="text-muted" th:text="${'Auteur : '+book.author}">Auteur</small>
+                    <small class="text-muted" th:text="${'(Parution : '+#dates.format(book.releaseDate, 'dd/MM/yyyy')+')'}">Parution</small>
+                    <br />
+<!--                <div class="logo" th:if="${book.isPromoted}">
+                       <img class="img-fluid" width="40" height="40" th:src="@{/img/promote/promote-MyLibrary_150x150.png}" alt="Promotion MyLibrary">
+                     </div>-->
+                    <br />
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <img th:if="${book.imgPathThAttribute == null}" class="center-block img-fluid" th:src="@{/img/book/default_book_900x400.jpg}" th:alt="${book.title}">
+                            <img th:if="${book.imgPathThAttribute != null}" class="center-block img-fluid" th:src="@{${book.imgPathThAttribute}}" th:alt="${book.title}">
+                            <br />
+                        </div>
+                        <div class="col-md-6">
+                            <br />
+                            <p th:utext="${book.description}">Description </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet(s) détail du livre -->
+                <br />
+                <nav>
+                    <div class="nav nav-tabs anchor" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-detail-tab"
+                           data-toggle="tab" href="#nav-detail"
+                           role="tab" aria-controls="nav-detail"
+                           aria-selected="true">Détail
+                        </a>
+                        <a class="nav-item nav-link disabled" id="nav-comments-tab"
+                           data-toggle="tab" href="#nav-comments"
+                           role="tab" aria-controls="nav-comments"
+                           aria-selected="false">Commentaires
+                        </a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+
+                    <div class="tab-pane fade show active" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
+                        <br />
+                        <div class="col-md-12">
+                            <dl class="row">
+                                <dt class="col-sm-3">
+                                    <span th:text="'Titre'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.title}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Autheur'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.author}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Editeur'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.editor}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Collection'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.collection}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'ISBN'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.isbn}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Parution'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${#dates.format(book.releaseDate, 'dd/MM/yyyy')}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Nb exemplaires'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.stock}">Value</span>
+                                </dd>
+                                <dt class="col-sm-3">
+                                    <span th:text="'Empruntable'">Label</span>
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <span th:text="${book.getLoanAvailable()} ? '✔ Oui' : '❌ Non'">value</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="nav-comments" role="tabpanel" aria-labelledby="nav-comments-tab">
+                        <br />
+                        <div class="col-md-12">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+<th:block th:insert="base :: footer">...</th:block>
+<th:block th:insert="base :: script">...</th:block>
+</body>
+</html>
