@@ -3,9 +3,11 @@ package com.library.mslibrary;
 import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookLoan;
+import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.entities.User;
 import com.library.mslibrary.security.WebSecurityConfig;
 import com.library.mslibrary.service.BookLoanService;
+import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
 import com.library.mslibrary.service.UserService;
 import com.library.mslibrary.utils.DateTools;
@@ -45,6 +47,9 @@ public class MsLibraryApplication implements CommandLineRunner {
 
 	@Autowired
 	private BookLoanService bookLoanService;
+
+	@Autowired
+	private BookReservationService bookReservationService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MsLibraryApplication.class, args);
@@ -245,7 +250,21 @@ public class MsLibraryApplication implements CommandLineRunner {
 						)
 				);
 				bookLoanService.saveAll(bookLoanList);
-				LOGGER.info("Ajout de {} prêt de livres", bookLoanList.size());
+				LOGGER.info("Ajout de {} prêts de livres", bookLoanList.size());
+
+			}
+
+			if (CollectionUtils.isEmpty(bookReservationService.findAll())) {
+				LOGGER.info("Création d'un jeu de données de réservation de livre en BDD");
+				List<BookReservation> bookReservationList = Arrays.asList(
+						new BookReservation(
+								userService.findUserByEmail("email@user1.fr"),
+								bookService.findBookById(1L)
+						),
+						new BookReservation()
+				);
+				bookReservationService.saveAll(bookReservationList);
+				LOGGER.info("Ajout de {} réservations de livres", bookReservationList.size());
 
 			}
 		}
