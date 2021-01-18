@@ -20,9 +20,6 @@ import java.util.List;
 @RestController
 public class BookLoanController {
 
-    @Autowired
-    private ApplicationPropertiesConfig appConfig;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(BookLoanController.class);
 
     @Autowired
@@ -84,7 +81,7 @@ public class BookLoanController {
     public void createBookLoan(@RequestBody BookLoan bookLoan) {
         if (bookLoan==null || bookLoan.getBook()==null || bookLoan.getUser()==null) throw new NoSuchResultException("Demande d'enregistrement d'emprunt : ECHEC");
 
-        BookLoan bookLoanToCreate = new BookLoan(bookLoan.getUser(), bookLoan.getBook(), appConfig.getBookLoanDuration());
+        BookLoan bookLoanToCreate = new BookLoan(bookLoan.getUser(), bookLoan.getBook(), applicationPropertiesConfig.getBookLoanDuration());
 
         Book bookToUpdate = bookLoanToCreate.getBook();
 

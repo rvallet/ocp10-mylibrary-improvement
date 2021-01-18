@@ -1,8 +1,6 @@
 package com.library.mslibrary.entities;
 
-import com.library.mslibrary.enumerated.BookLoanStatusEnum;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
-import com.library.mslibrary.utils.DateTools;
 
 import javax.persistence.*;
 import java.io.Serializable;
