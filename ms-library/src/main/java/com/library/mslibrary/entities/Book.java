@@ -48,6 +48,10 @@ public class Book implements Serializable {
     @JsonIgnore
     private Collection<BookLoan> bookLoan;
 
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Collection<BookReservation> bookReservation;
+
     public Book() {
         super();
         this.isOnline = false;
@@ -169,6 +173,14 @@ public class Book implements Serializable {
 
     public void setBookLoan(Collection<BookLoan> bookLoan) {
         this.bookLoan = bookLoan;
+    }
+
+    public Collection<BookReservation> getBookReservation() {
+        return bookReservation;
+    }
+
+    public void setBookReservation(Collection<BookReservation> bookReservation) {
+        this.bookReservation = bookReservation;
     }
 
     public Boolean getLoanAvailable() {
