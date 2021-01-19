@@ -42,6 +42,11 @@
                        role="tab" aria-controls="nav-history"
                        aria-selected="false">Historique des emprunts
                     </a>
+                    <a class="nav-item nav-link" id="nav-bookreservation-tab"
+                       data-toggle="tab" href="#nav-bookreservation"
+                       role="tab" aria-controls="nav-bookreservation"
+                       aria-selected="false">Les réservations
+                    </a>
                 </div>
             </nav>
 
@@ -234,6 +239,83 @@
                                             <span th:text="${bookLoan.getLoanExtended()} ? 'Oui' : 'Non'">Prolongation de l'emprunt</span>
                                         </div>
                                     </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Les reservations de Livres -->
+                <div class="tab-pane fade" id="nav-bookreservation" role="tabpanel" aria-labelledby="nav-bookreservation-tab">
+                    <br />
+                    <div class="col-md-12">
+                        <button class="btn btn-outline-default btn-lg btn-block" type="button" data-toggle="collapse" data-target="#addReservation" aria-expanded="false" aria-controls="addReservation">
+						    <span class="collapsed">
+						        Ajouter une réservation
+                            </span>
+                            <span class="expanded">
+							    Replier
+							</span>
+                        </button>
+                        <div class="collapse" id="addReservation">
+                            <!-- Ajouter une Réservation -->
+                            <div class="container text-center">
+                                <br />
+                                <form th:action="@{admin/create-bookReservation}" method="post">
+                                    <div class="form-group row">
+                                        <label for="email" class="col-sm-2 col-form-label">
+                                            eMail de l'utilisateur
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="email" th:name="email" placeholder="Email de l'utilisateur" autofocus="autofocus" required>
+                                            <p class="error-message" th:if="${!#strings.isEmpty(errorUser)}" th:text="${errorUser}">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="isbn" class="col-sm-2 col-form-label">
+                                            Référence ISBN
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="isbn" th:name="isbn" placeholder="Référence ISBN" required>
+                                            <p class="error-message" th:if="${!#strings.isEmpty(errorBook)}" th:text="${errorBook}">Validation error</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-success" type="submit">
+                                        Valider
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" th:if="${bookReservationList==null or bookReservationList.isEmpty()}">
+                        <br />
+                        <h3>Les Réservations de livres</h3>
+                        <p>Il n'y a aucune réservation de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookReservationList!=null and !bookReservationList.isEmpty()}">
+                        <br />
+                        <h3>Les Réservations de livres</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de la réservation</th>
+                                    <th scope="col">Date de clôture</th>
+                                    <th scope="col">Utilisateur</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookReservation:${bookReservationList}" th:if="${bookReservation.reservationStatus != 'Terminé'}">
+                                    <th scope="row"><span th:text="${bookReservation.id}">#</span></th>
+                                    <td><span th:text="${bookReservation.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookReservation.reservationStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookReservation.creationDate, 'dd/MM/yyyy')}">Date de la réservation</span></td>
+                                    <td><span th:text="${#dates.format(bookReservation.closingDate, 'dd/MM/yyyy')}">Date de clôture</span></td>
+                                    <td><span th:text="${bookReservation.getUser()?.getEmail()}">Utilisateur</span></td>
                                 </tr>
                                 </tbody>
                             </table>

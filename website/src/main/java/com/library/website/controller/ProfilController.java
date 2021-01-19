@@ -2,6 +2,7 @@ package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
 import com.library.website.beans.BookLoanBean;
+import com.library.website.beans.BookReservationBean;
 import com.library.website.beans.UserBean;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ public class ProfilController {
 
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansByUserId(u.getId().toString());
         model.addAttribute("bookLoanList" , bookLoanList);
+
+        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsByUserId(u.getId().toString());
+        model.addAttribute("bookReservationList" , bookReservationList);
 
         LOGGER.debug("bookLoanList : Size = {} (id du premier = {})",
             bookLoanList.size(),
@@ -104,6 +108,10 @@ public class ProfilController {
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansList();
         model.addAttribute("bookLoanList", bookLoanList);
         LOGGER.info("Chargement de {} emprunts", bookLoanList.size());
+
+        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsList();
+        model.addAttribute("bookReservationList", bookReservationList);
+        LOGGER.info("Chargement de {} reservations", bookReservationList.size());
 
         String email = "";
         String isbn = "";
@@ -178,6 +186,40 @@ public class ProfilController {
         }
 
         return "redirect:/admin/profil#nav-bookloan";
+    }
+
+    @PostMapping("/admin/create-bookReservation")
+    public String createBookReservation (
+            @RequestParam(name="email") String userEmail,
+            @RequestParam(name="isbn") String isbn,
+            Model model
+    ){
+        UserBean user = msLibraryProxy.getUserByEmail(userEmail);
+        BookBean book = msLibraryProxy.getBookByIsbn(isbn);
+
+        if (user == null) {
+            String errorUser = "Aucun utilisateur trouvé avec l'adresse : "+userEmail;
+            model.addAttribute("errorUser", errorUser);
+            LOGGER.info(errorUser);
+            return "redirect:/admin/profil#nav-bookreservation";
+        }
+
+        if (book == null) {
+            String errorBook = "Aucun livre trouvé avec l'ISBN "+isbn;
+            model.addAttribute("errorBook", errorBook);
+            LOGGER.info(errorBook);
+            return "redirect:/admin/profil#nav-bookreservation";
+        }
+
+        if (book != null && user != null) {
+            LOGGER.info("Envoie d'un enregistrement de création d'emprunt du livre {} pour l'utilisateur {}", book.getTitle(), user.getEmail());
+            BookReservationBean bookReservationBean = new BookReservationBean();
+            bookReservationBean.setUser(user);
+            bookReservationBean.setBook(book);
+            msLibraryProxy.createBookReservation(bookReservationBean);
+        }
+
+        return "redirect:/admin/profil#nav-bookreservation";
     }
 
     @GetMapping("/admin/profil/user/page/{pageNumber}")

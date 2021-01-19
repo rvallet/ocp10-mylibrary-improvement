@@ -39,5 +39,14 @@ public class BookReservationController {
         return bookReservationList;
     }
 
+    @GetMapping(value= ApiRegistration.REST_BOOK_RESERVATIONS_LIST)
+    public List<BookReservation> findBookReservationsList() throws NoSuchResultException {
+        List<BookReservation> bookReservationList = bookReservationService.findAll();
+        LOGGER.info("Envoi d'une liste de {} reservations", bookReservationList.size());
+        //TODO : return pageable with properties
+        LOGGER.debug("PageSizeLimit = {}", applicationPropertiesConfig.getPageSizeLimit());
+        return bookReservationList;
+    }
+
 
 }
