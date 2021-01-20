@@ -1,5 +1,6 @@
 package com.library.mslibrary.service.impl;
 
+import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Autowired
     BookReservationRepository bookReservationRepository;
+
+    @Autowired
+    private ApplicationPropertiesConfig applicationPropertiesConfig;
 
     @Override
     public List<BookReservation> findAll() {
@@ -61,5 +66,13 @@ public class BookReservationServiceImpl implements BookReservationService {
     @Override
     public Integer nbBookReservation(Book book, List<String> bookReservationStatus) {
         return bookReservationRepository.countBookReservationByBookAndReservationStatus(book, bookReservationStatus);
+    }
+
+    @Override
+    public boolean computeIsReservationAvailable(Book book){
+        return this.nbBookReservation(
+                book,
+                Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString())
+        ) < (book.getNbCopy()*applicationPropertiesConfig.getBookReservationFactorLimit());
     }
 }

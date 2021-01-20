@@ -213,6 +213,7 @@ public class MsLibraryApplication implements CommandLineRunner {
 					book.setOnline(true);
 					book.setStock(RandomTools.randomNum(0,5));
 					book.setNbCopy(RandomTools.randomNum(1,5));
+					book.setReservationAvailable(true);
 					if (book.getStock()>book.getNbCopy()) {
 						book.setStock(book.getNbCopy());
 					}

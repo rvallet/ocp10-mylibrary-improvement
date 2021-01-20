@@ -3,7 +3,9 @@ package com.library.mslibrary.service.impl;
 import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.BookLoan;
 import com.library.mslibrary.enumerated.BookLoanStatusEnum;
+import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 import com.library.mslibrary.repository.BookLoanRepository;
+import com.library.mslibrary.repository.BookReservationRepository;
 import com.library.mslibrary.service.BookLoanService;
 import com.library.mslibrary.utils.DateTools;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +67,8 @@ public class BookLoanServiceImpl implements BookLoanService {
         bl.getBook().setStock(bl.getBook().getStock() +1);
         bl.getBook().setLoanAvailable(true);
         bl.setLoanStatus(BookLoanStatusEnum.CLOSED.toString());
+        bl.getBook().setReservationAvailable(true);
+
         LOGGER.info("Clôture de l'emprunt id {} (Status {} - Date de retour : {})", bookLoanId, bl.getLoanStatus(), bl.getReturnLoan());
         return bookLoanRepository.save(bl);
     }
@@ -72,4 +77,6 @@ public class BookLoanServiceImpl implements BookLoanService {
     public List<BookLoan> saveAll(List<BookLoan> bookLoanList) {
         return bookLoanRepository.saveAll(bookLoanList);
     }
+
+
 }

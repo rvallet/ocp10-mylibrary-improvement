@@ -122,7 +122,11 @@
                                         <input type="hidden" name="id_book" th:value="${book.id}"/>
                                         <button type="submit" th:if="${book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">En savoir plus</button>
                                     </form>
-                                    <button type="button" th:if="${!book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">
+                                    <form th:action="@{livre}" method="get">
+                                        <input type="hidden" name="id_book" th:value="${book.id}"/>
+                                        <button type="submit" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}" th:disabled="${!book.getReservationAvailable()}" class="btn btn-secondary btn-block">Réserver</button>
+                                    </form>
+                                    <button type="button" th:if="${!book.getLoanAvailable() and !book.getReservationAvailable()}" th:disabled="${!book.getLoanAvailable() or !book.getReservationAvailable()}" class="btn btn-secondary btn-block">
                                         Indisponible
                                     </button>
                                 </div>

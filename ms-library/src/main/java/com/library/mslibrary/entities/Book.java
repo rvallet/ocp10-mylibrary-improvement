@@ -2,6 +2,7 @@ package com.library.mslibrary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.library.mslibrary.ws.controller.BookReservationController;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -44,6 +45,8 @@ public class Book implements Serializable {
 
     private Boolean isLoanAvailable;
 
+    private Boolean isReservationAvailable;
+
     private Boolean isOnline;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
@@ -58,6 +61,7 @@ public class Book implements Serializable {
         super();
         this.isOnline = false;
         this.isLoanAvailable = false;
+        this.isReservationAvailable = false;
     }
 
     public Book(String title, String description, String author, String editor, String collection, String isbn, Date releaseDate) {
@@ -70,7 +74,8 @@ public class Book implements Serializable {
         this.isbn = isbn;
         this.releaseDate = releaseDate;
         this.isOnline = false;
-        this.isLoanAvailable = this.stock > 0;
+        this.isLoanAvailable = false;
+        this.isReservationAvailable = false;
     }
 
     public Long getId() {
@@ -153,9 +158,7 @@ public class Book implements Serializable {
         return stock;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+    public void setStock(int stock) {this.stock = stock;}
 
     public Date getReleaseDate() {
         return releaseDate;
@@ -185,9 +188,7 @@ public class Book implements Serializable {
         return bookReservation;
     }
 
-    public void setBookReservation(Collection<BookReservation> bookReservation) {
-        this.bookReservation = bookReservation;
-    }
+    public void setBookReservation(Collection<BookReservation> bookReservation) {this.bookReservation = bookReservation;}
 
     public Boolean getLoanAvailable() {
         return isLoanAvailable;
@@ -196,4 +197,9 @@ public class Book implements Serializable {
     public void setLoanAvailable(Boolean loanAvailable) {
         isLoanAvailable = loanAvailable;
     }
+
+    public Boolean getReservationAvailable() {return isReservationAvailable;}
+
+    public void setReservationAvailable(Boolean reservationAvailable) {isReservationAvailable = reservationAvailable;}
+
 }
