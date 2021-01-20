@@ -32,6 +32,8 @@ public interface ApiRegistration {
 
     String REST_BOOK_RESERVATIONS_LIST_BY_USER_ID = "/findBookReservationsListByUserId";
 
+    String REST_NB_CURRENT_BOOK_RESERVATIONS = "/getNbCurrentBookReservations";
+
     String REST_BOOKS_LOANS = "/booksLoans";
 
     String REST_GET_BOOK_BY_ID = "/findBookById";

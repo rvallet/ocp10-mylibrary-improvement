@@ -1,5 +1,6 @@
 package com.library.mslibrary.service.impl;
 
+import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 import com.library.mslibrary.repository.BookReservationRepository;
@@ -55,5 +56,10 @@ public class BookReservationServiceImpl implements BookReservationService {
     @Override
     public List<BookReservation> saveAll(List<BookReservation> bookReservationList) {
         return bookReservationRepository.saveAll(bookReservationList);
+    }
+
+    @Override
+    public Integer nbBookReservation(Book book, List<String> bookReservationStatus) {
+        return bookReservationRepository.countBookReservationByBookAndReservationStatus(book, bookReservationStatus);
     }
 }

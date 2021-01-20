@@ -212,6 +212,10 @@ public class MsLibraryApplication implements CommandLineRunner {
 					if (i>10) {i=RandomTools.randomNum(1,10);}
 					book.setOnline(true);
 					book.setStock(RandomTools.randomNum(0,5));
+					book.setNbCopy(RandomTools.randomNum(1,5));
+					if (book.getStock()>book.getNbCopy()) {
+						book.setStock(book.getNbCopy());
+					}
 					if ((book.getStock() < 1)) {
 						book.setLoanAvailable(false);
 					} else {
@@ -261,7 +265,10 @@ public class MsLibraryApplication implements CommandLineRunner {
 								userService.findUserByEmail("email@user1.fr"),
 								bookService.findBookById(1L)
 						),
-						new BookReservation()
+						new BookReservation(
+								userService.findUserByEmail("email@user2.fr"),
+								bookService.findBookById(2L)
+						)
 				);
 				bookReservationService.saveAll(bookReservationList);
 				LOGGER.info("Ajout de {} réservations de livres", bookReservationList.size());

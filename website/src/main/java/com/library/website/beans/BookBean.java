@@ -25,6 +25,8 @@ public class BookBean {
 
     private Date releaseDate;
 
+    private int nbCopy;
+
     private int stock;
 
     private Boolean isLoanAvailable;
@@ -110,6 +112,10 @@ public class BookBean {
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    public int getNbCopy() {return nbCopy;}
+
+    public void setNbCopy(int nbCopy) {this.nbCopy = nbCopy;}
 
     public int getStock() {
         return stock;

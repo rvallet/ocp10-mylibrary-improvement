@@ -38,6 +38,8 @@ public class Book implements Serializable {
 
     private Date releaseDate;
 
+    private int nbCopy;
+
     private int stock;
 
     private Boolean isLoanAvailable;
@@ -142,6 +144,10 @@ public class Book implements Serializable {
     public void setImgPathThAttribute(String imgPathThAttribute) {
         this.imgPathThAttribute = imgPathThAttribute;
     }
+
+    public int getNbCopy() {return nbCopy;}
+
+    public void setNbCopy(int nbCopy) {this.nbCopy = nbCopy;}
 
     public int getStock() {
         return stock;
