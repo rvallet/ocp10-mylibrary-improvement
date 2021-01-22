@@ -12,7 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class BookLoanController {
@@ -89,6 +92,22 @@ public class BookLoanController {
         LOGGER.info("Création d'un emprunt (Ouvrage : {} - Usager : {}", bookLoanToCreate.getBook().getTitle(), bookLoanToCreate.getUser().getEmail());
         bookService.saveBook(bookToUpdate);
         bookLoanService.saveBookLoan(bookLoanToCreate);
+    }
+
+    @GetMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE + "/{bookloanId}")
+    public Date getNextBookloanEndDate(@PathVariable Long bookId) {
+        Date result = bookLoanService.getNextBookloanEndDate(bookId);
+        LOGGER.info("Prochaine échéance d'emprunt du Livre id {} : {}", bookId, result);
+        return result;
+    }
+
+    @PostMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST)
+    public Map<Integer, String> getNbCurrentBookListReservations(@RequestBody List<Book> bookList) {
+        Map<Integer, String> result = new HashMap<>();
+        bookList.stream().forEach(b -> result.put(b.getId().intValue(), getNextBookloanEndDate(b.getId()).toString()));
+        LOGGER.debug("{} Livres : ", bookList.size());
+        result.entrySet().stream().forEach(k -> LOGGER.debug("id = {} --> Échéance = {}",k.getKey(), k.getValue()));
+        return result;
     }
 }
 

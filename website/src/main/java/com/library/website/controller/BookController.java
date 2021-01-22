@@ -1,6 +1,8 @@
 package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
+import com.library.website.beans.BookLoanBean;
+import com.library.website.beans.BookReservationBean;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -56,8 +60,17 @@ public class BookController {
             }
         }
 
+        Map<Integer, Integer> nbBookReservationByBookId = msLibraryProxy.getNbCurrentBookListReservation(bookList);
+        //TODO: /getNbCurrentBookListReservations
+
+        Map<Integer, Integer> endloanDateByBookId = new HashMap<>();
+        List<BookLoanBean> blList = msLibraryProxy.getBookLoansList();
+
+
         LOGGER.info("Réception d'une liste de {} livres.", bookList.size());
         model.addAttribute("bookList", bookList);
+        model.addAttribute("nbBookReservationByBookId", nbBookReservationByBookId);
+        model.addAttribute("endloanDateByBookId", endloanDateByBookId);
         model.addAttribute("searchCriteriaList", searchCriteriaList );
         return "livres";
     }

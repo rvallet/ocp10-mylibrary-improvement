@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "ms-library")
 @RibbonClient(name = "ms-library")
@@ -70,8 +71,11 @@ public interface MicroServiceLibraryProxy {
     @PostMapping(value = "/createBookReservation")
     BookLoanBean createBookReservation(@RequestBody BookReservationBean bookReservationBean);
 
-    @PostMapping(value = "/getNbCurrentBookReservations")
+    @GetMapping(value = "/getNbCurrentBookReservations")
     BookLoanBean getNbCurrentBookReservation(@PathVariable Long bookId);
+
+    @PostMapping(value = "/getNbCurrentBookListReservations")
+    Map<Integer, Integer> getNbCurrentBookListReservation(@RequestBody List<BookBean> bookList);
 
     @GetMapping(value = "/extendBookLoan/{bookLoanId}")
     BookLoanBean extendBookLoan(@PathVariable Long bookLoanId);

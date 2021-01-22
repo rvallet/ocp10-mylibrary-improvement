@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -77,5 +79,18 @@ public class BookLoanServiceImpl implements BookLoanService {
         return bookLoanRepository.saveAll(bookLoanList);
     }
 
+    @Override
+    public List<BookLoan> findBookLoansByBookId (Long bookId) {
+        return bookLoanRepository.findBookLoansByBookId(bookId);
+    }
+
+    public Date getNextBookloanEndDate(Long bookId){
+        List<BookLoan> blList = bookLoanRepository.findBookLoansByBookIdOrderByEndLoan(bookId);
+        Date result = null;
+        if (!CollectionUtils.isEmpty(blList)) {
+            result = blList.get(0).getEndLoan();
+        }
+     return result;
+    }
 
 }

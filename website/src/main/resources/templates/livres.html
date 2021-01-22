@@ -117,7 +117,21 @@
                                     <p class="card-text text-right"><small class="text-muted" th:text="'Publié le ' + ${#dates.format(book.releaseDate, 'dd/MM/yyyy')}">Date de publication</small></p>
                                 </div>
                                 <div class="card-footer">
-                                    <p class="card-text"><small class="text-muted" th:text="'Nb Exemplaire : ' + ${book.stock}">Stock</small></p>
+                                    <p class="card-text" th:if="${book.getLoanAvailable()}">
+                                        <small class="text-muted" th:text="'Nb Exemplaire : ' + ${book.stock}">
+                                            Stock
+                                        </small>
+                                    </p>
+                                    <p class="card-text" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}">
+                                        <small class="text-muted" th:text="'Nb Réservation : ' + ${nbBookReservationByBookId.get(book.id) ?:'0'}">
+                                            nbReservation
+                                        </small>
+                                    </p>
+                                    <p class="card-text" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}">
+                                        <small class="text-muted" th:text="'Date de retour : ' + ${endloanDateByBookId.get(book.id) ?:'0'}">
+                                            Date de Retour
+                                        </small>
+                                    </p>
                                     <form th:action="@{livre}" method="get">
                                         <input type="hidden" name="id_book" th:value="${book.id}"/>
                                         <button type="submit" th:if="${book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">En savoir plus</button>
