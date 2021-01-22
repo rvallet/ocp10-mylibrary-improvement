@@ -53,14 +53,13 @@ public class BookReservationController {
 
     @GetMapping(value= ApiRegistration.REST_NB_CURRENT_BOOK_RESERVATIONS + "/{bookId}")
     public Integer getNbCurrentBookReservations(@PathVariable Long bookId) {
-        Integer result;
-        Book book = bookService.findBookById(bookId);
-        List<String> bookReservationStatus = Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString());
-        LOGGER.info("Livre id {} : Récupération du nombre de réservation en status \n{}", bookId, bookReservationStatus);
-        result = bookReservationService.nbBookReservation(book, bookReservationStatus);
+        Integer result = bookReservationService.nbBookReservation(
+                bookService.findBookById(bookId),
+                bookReservationService.getCurrentBookReservationStatusList()
+        );
+        LOGGER.info("Récupération du nombre de réservation pour le Livre id {} : \n{}", bookId);
         LOGGER.info("==> {} Réservations", result);
         return result;
     }
-
 
 }

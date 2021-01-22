@@ -212,7 +212,7 @@ public class ProfilController {
         }
 
         if (book != null && user != null) {
-            LOGGER.info("Envoie d'un enregistrement de création d'emprunt du livre {} pour l'utilisateur {}", book.getTitle(), user.getEmail());
+            LOGGER.info("Envoie d'un enregistrement de réservation du livre {} pour l'utilisateur {}", book.getTitle(), user.getEmail());
             BookReservationBean bookReservationBean = new BookReservationBean();
             bookReservationBean.setUser(user);
             bookReservationBean.setBook(book);

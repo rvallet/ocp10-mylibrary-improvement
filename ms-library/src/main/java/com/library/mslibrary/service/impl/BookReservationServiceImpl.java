@@ -72,7 +72,12 @@ public class BookReservationServiceImpl implements BookReservationService {
     public boolean computeIsReservationAvailable(Book book){
         return this.nbBookReservation(
                 book,
-                Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString())
+                getCurrentBookReservationStatusList()
         ) < (book.getNbCopy()*applicationPropertiesConfig.getBookReservationFactorLimit());
+    }
+
+    @Override
+    public List<String> getCurrentBookReservationStatusList() {
+        return Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString());
     }
 }

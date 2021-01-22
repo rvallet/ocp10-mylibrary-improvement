@@ -15,4 +15,5 @@ public interface BookReservationService {
     List<BookReservation> saveAll (List<BookReservation> bookReservationList);
     Integer nbBookReservation(Book book, List<String> bookReservationStatus);
     boolean computeIsReservationAvailable(Book book);
+    List<String> getCurrentBookReservationStatusList();
 }
