@@ -50,11 +50,29 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan extendBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        bl.setLoanExtended(true);
-        bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
-        bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
-        LOGGER.info("Prolongation de l'emprunt id {} (Status {} - Date de fin : {})", bookLoanId, bl.getLoanStatus(), bl.getEndLoan());
-        return bookLoanRepository.save(bl);
+        if (isExtendable(bl)) {
+            bl.setLoanExtended(true);
+            bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
+            bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
+            LOGGER.info(
+                    "Prolongation de l'emprunt id {} (Status {} - Date de fin : {})",
+                    bookLoanId,
+                    bl.getLoanStatus(),
+                    bl.getEndLoan());
+            bookLoanRepository.save(bl);
+        } else {
+            // Bug issue #2 (BookLoan could not be extend after endLoan Date)
+            LOGGER.debug(
+                    "L'emprunt id {} ne peut être prolongé après échéance (Status {} - Date de fin : {})",
+                    bookLoanId,
+                    bl.getLoanStatus(),
+                    bl.getEndLoan());
+        }
+        return bl;
+    }
+
+    private Boolean isExtendable(BookLoan bl){
+        return bl.getEndLoan().after(new Date());
     }
 
     @Override
