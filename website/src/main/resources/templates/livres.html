@@ -122,13 +122,13 @@
                                             Stock
                                         </small>
                                     </p>
-                                    <p class="card-text" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}">
-                                        <small class="text-muted" th:text="'Nb Réservation : ' + ${nbBookReservationByBookId.get(book.id) ?:'0'}">
+                                    <p class="card-text">
+                                        <small class="text-muted" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}" th:text="'Nb Réservation : ' + ${nbBookReservationByBookId[__${book.id}__] ?:'0'}">
                                             nbReservation
                                         </small>
                                     </p>
-                                    <p class="card-text" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}">
-                                        <small class="text-muted" th:text="'Date de retour : ' + ${endloanDateByBookId.get(book.id) ?:'0'}">
+                                    <p class="card-text">
+                                        <small class="text-muted" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}" th:text="'Date de retour : ' + ${endloanDateByBookId[__${book.id}__] ?:'-'}">
                                             Date de Retour
                                         </small>
                                     </p>

@@ -84,11 +84,11 @@ public class BookLoanServiceImpl implements BookLoanService {
         return bookLoanRepository.findBookLoansByBookId(bookId);
     }
 
-    public Date getNextBookloanEndDate(Long bookId){
+    public String getNextBookloanEndDate(Long bookId){
         List<BookLoan> blList = bookLoanRepository.findBookLoansByBookIdOrderByEndLoan(bookId);
-        Date result = null;
+        String result = "";
         if (!CollectionUtils.isEmpty(blList)) {
-            result = blList.get(0).getEndLoan();
+            result = DateTools.dateFormat(blList.get(0).getEndLoan());
         }
      return result;
     }

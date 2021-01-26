@@ -1,8 +1,6 @@
 package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
-import com.library.website.beans.BookLoanBean;
-import com.library.website.beans.BookReservationBean;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,7 +28,6 @@ public class BookController {
             @RequestParam(name="searchValue", required = false) String searchValue,
             Model model) {
 
-        LOGGER.debug("Envoie d'une demande de listes de livres");
         List<BookBean> bookList = msLibraryProxy.getBookList();
         List<String> searchCriteriaList = msLibraryProxy.getSearchCriteriaList();
 
@@ -61,11 +57,15 @@ public class BookController {
         }
 
         Map<Integer, Integer> nbBookReservationByBookId = msLibraryProxy.getNbCurrentBookListReservation(bookList);
-        //TODO: /getNbCurrentBookListReservations
-
-        Map<Integer, Integer> endloanDateByBookId = new HashMap<>();
-        List<BookLoanBean> blList = msLibraryProxy.getBookLoansList();
-
+        Map<Integer, String> endloanDateByBookId = msLibraryProxy.getNextBookloanEnddateList(bookList);
+        endloanDateByBookId
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> nextEndLoanDate: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
 
         LOGGER.info("Réception d'une liste de {} livres.", bookList.size());
         model.addAttribute("bookList", bookList);

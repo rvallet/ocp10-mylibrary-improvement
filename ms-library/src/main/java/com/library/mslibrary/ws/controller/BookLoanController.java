@@ -95,18 +95,18 @@ public class BookLoanController {
     }
 
     @GetMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE + "/{bookloanId}")
-    public Date getNextBookloanEndDate(@PathVariable Long bookId) {
-        Date result = bookLoanService.getNextBookloanEndDate(bookId);
+    public String getNextBookloanEndDate(@PathVariable Long bookId) {
+        String result = bookLoanService.getNextBookloanEndDate(bookId);
         LOGGER.info("Prochaine échéance d'emprunt du Livre id {} : {}", bookId, result);
         return result;
     }
 
     @PostMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST)
-    public Map<Integer, String> getNbCurrentBookListReservations(@RequestBody List<Book> bookList) {
+    public Map<Integer, String> getNextBookloanEnddateList(@RequestBody List<Book> bookList) {
         Map<Integer, String> result = new HashMap<>();
-        bookList.stream().forEach(b -> result.put(b.getId().intValue(), getNextBookloanEndDate(b.getId()).toString()));
+        bookList.stream().forEach(b -> result.put(b.getId().intValue(), getNextBookloanEndDate(b.getId())));
         LOGGER.debug("{} Livres : ", bookList.size());
-        result.entrySet().stream().forEach(k -> LOGGER.debug("id = {} --> Échéance = {}",k.getKey(), k.getValue()));
+        result.entrySet().stream().forEach(k -> LOGGER.info("id = {} --> Échéance = {}",k.getKey(), k.getValue()));
         return result;
     }
 }

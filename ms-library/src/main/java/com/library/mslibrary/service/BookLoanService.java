@@ -15,6 +15,6 @@ public interface BookLoanService {
     BookLoan extendBookLoan (Long bookLoanId);
     BookLoan closeBookLoan (Long bookLoanId);
     List<BookLoan> saveAll (List<BookLoan> bookLoanList);
-    Date getNextBookloanEndDate (Long bookId);
+    String getNextBookloanEndDate (Long bookId);
 
 }
