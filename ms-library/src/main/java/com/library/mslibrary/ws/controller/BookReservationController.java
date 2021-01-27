@@ -70,4 +70,13 @@ public class BookReservationController {
         return result;
     }
 
+    @PostMapping(value= ApiRegistration.REST_CREATE_BOOK_RESERVATION)
+    public BookReservation createBookReservation(@RequestBody BookReservation bookReservation) {
+        if (bookReservation==null || bookReservation.getBook()==null || bookReservation.getUser()==null) throw new NoSuchResultException("Demande d'enregistrement de réservation : ECHEC");
+
+        BookReservation result = new BookReservation(bookReservation.getUser(), bookReservation.getBook());
+
+        return bookReservationService.saveBookReservation(result);
+    }
+
 }

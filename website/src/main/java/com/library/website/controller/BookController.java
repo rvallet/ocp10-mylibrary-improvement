@@ -1,10 +1,13 @@
 package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
+import com.library.website.beans.BookReservationBean;
+import com.library.website.beans.UserBean;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +30,7 @@ public class BookController {
             @RequestParam(name="searchCriteria", required = false) String searchCriteria,
             @RequestParam(name="searchValue", required = false) String searchValue,
             Model model) {
-
+        UserBean user = msLibraryProxy.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<BookBean> bookList = msLibraryProxy.getBookList();
         List<String> searchCriteriaList = msLibraryProxy.getSearchCriteriaList();
 
@@ -72,6 +75,7 @@ public class BookController {
         model.addAttribute("nbBookReservationByBookId", nbBookReservationByBookId);
         model.addAttribute("endloanDateByBookId", endloanDateByBookId);
         model.addAttribute("searchCriteriaList", searchCriteriaList );
+        model.addAttribute("user", user);
         return "livres";
     }
 
@@ -92,5 +96,25 @@ public class BookController {
 
         model.addAttribute("book", book);
         return "livre";
+    }
+
+    @GetMapping("/reservation")
+    public String createBookReservation(
+            Model model,
+            @RequestParam(name = "id_book", required = false) Long bookId,
+            @RequestParam(name = "id_user", required = false) Long userId
+    ) {
+        if (bookId == null || userId ==null) {
+            LOGGER.error("Envoi d'une demande de reservation de livre id_book={} pour l'utilisateur id_user={}", bookId, userId);
+            return "redirect:/livres";
+        }
+
+        LOGGER.info("Envoi d'une demande de reservation de livre id_book={} pour l'utilisateur id_user={}", bookId, userId);
+        BookReservationBean bookReservation = new BookReservationBean();
+        bookReservation.setBook(msLibraryProxy.getBookById(bookId));
+        bookReservation.setUser(msLibraryProxy.getUserById(userId));
+        msLibraryProxy.createBookReservation(bookReservation);
+
+        return "redirect:/livres";
     }
 }
