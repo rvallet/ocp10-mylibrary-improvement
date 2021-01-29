@@ -36,11 +36,17 @@ public interface ApiRegistration {
 
     String REST_NB_CURRENT_BOOKLIST_RESERVATIONS = "/getNbCurrentBookListReservations";
 
+    String REST_GET_USER_POSITION_IN_BOOK_RESERVATION = "/getUserPositionInBookReservation";
+
+    String REST_GET_USER_POSITIONS_LIST_IN_BOOK_RESERVATIONS = "/getUserPositionsListInBookReservations";
+
     String REST_GET_NEXT_BOOKLOAN_ENDDATE = "/getNextBookloanEnddate";
 
     String REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST = "/getNextBookloanEnddateList";
 
     String REST_CREATE_BOOK_RESERVATION = "/createBookReservation";
+
+    String REST_CLOSE_BOOK_RESERVATION = "/closeBookReservation";
 
     String REST_BOOKS_LOANS = "/booksLoans";
 

@@ -17,9 +17,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProfilController {
@@ -37,8 +36,31 @@ public class ProfilController {
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansByUserId(u.getId().toString());
         model.addAttribute("bookLoanList" , bookLoanList);
 
-        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsByUserId(u.getId().toString());
+        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsByUserId(u.getId());
         model.addAttribute("bookReservationList" , bookReservationList);
+
+        Map<Integer, Integer> reservationPositionList = msLibraryProxy.getUserPositionsListInBookReservations(u.getId());
+        reservationPositionList
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> Position: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
+        model.addAttribute("reservationPositionList" , reservationPositionList);
+
+        List<BookBean> bookList = bookReservationList.stream().map(e -> e.getBook()).collect(Collectors.toList());
+        Map<Integer, String> endloanDateByBookId = msLibraryProxy.getNextBookloanEnddateList(bookList);
+        model.addAttribute("endloanDateByBookId" , endloanDateByBookId);
+        endloanDateByBookId
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> nextEndLoanDate: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
 
         LOGGER.debug("bookLoanList : Size = {} (id du premier = {})",
             bookLoanList.size(),
@@ -47,6 +69,15 @@ public class ProfilController {
         LOGGER.info("Chargement du profil {}", u.getEmail());
 
         return "user/profil";
+    }
+
+    @GetMapping(value="/user/close-bookReservation")
+    public String closeBookReservation(
+            @RequestParam (name="bookReservationId") Long bookReservationId
+    ){
+        msLibraryProxy.closeBookReservation(bookReservationId);
+        LOGGER.info("Envoi d'une demande d'archivage de la réservation id {}", bookReservationId);
+        return "redirect:/user/profil#nav-bookreservation";
     }
 
     @GetMapping("/user/update-bookloan")

@@ -38,7 +38,7 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public List<BookReservation> findBookReservationsByUserId(Long userId) {
-        List<BookReservation> bookReservationList = bookReservationRepository.findBookReservationsByUserId(userId);
+        List<BookReservation> bookReservationList = bookReservationRepository.findBookReservationsByUserId(userId, getCurrentBookReservationStatusList());
         LOGGER.info("Envoie d'une liste de {} reservations (utilisateur id = {}).", bookReservationList.size(), userId);
         return bookReservationList;
     }
@@ -66,6 +66,26 @@ public class BookReservationServiceImpl implements BookReservationService {
     @Override
     public Integer nbBookReservation(Book book, List<String> bookReservationStatus) {
         return bookReservationRepository.countBookReservationByBookAndReservationStatus(book, bookReservationStatus);
+    }
+
+    @Override
+    public BookReservation findBookReservationByUserIdAndByBookId(Long userId, Long bookId) {
+        return bookReservationRepository.findBookReservationsByUserIdAndByBookId(userId, bookId, getCurrentBookReservationStatusList());
+    }
+
+    @Override
+    public Integer computePositionOfBookReservation(BookReservation bookReservation) {
+        Integer result = 0;
+        int index = 1;
+        List<BookReservation> brList = bookReservationRepository.findBookReservationsByBookId(bookReservation.getBook().getId(), getCurrentBookReservationStatusList());
+        for (BookReservation br : brList) {
+            if (br.getUser().getId() == bookReservation.getUser().getId()) {
+                result = index;
+                break;
+            }
+            index+=1;
+        }
+        return result;
     }
 
     @Override

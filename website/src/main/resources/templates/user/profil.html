@@ -193,7 +193,9 @@
                                     <th scope="col">Titre</th>
                                     <th scope="col">Statut</th>
                                     <th scope="col">Date de reservation</th>
-                                    <th scope="col">Date de cloture de l'emprunt</th>
+                                    <th scope="col">Prochain Retour</th>
+                                    <th scope="col">Ma position</th>
+                                    <th scope="col">Annulation</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -201,8 +203,15 @@
                                     <th scope="row"><span th:text="${bookReservation.id}">#</span></th>
                                     <td><span th:text="${bookReservation.book?.title}">Titre</span></td>
                                     <td><span th:text="${bookReservation.reservationStatus}">Statut</span></td>
-                                    <td><span th:text="${#dates.format(bookReservation.creationDate, 'dd/MM/yyyy')}">Date de l'emprunt</span></td>
-                                    <td><span th:text="${#dates.format(bookReservation.closingDate, 'dd/MM/yyyy')}">Date de cloture de l'emprunt</span></td>
+                                    <td><span th:text="${#dates.format(bookReservation.creationDate, 'dd/MM/yyyy')}">Date de reservation</span></td>
+                                    <td><span th:text="${endloanDateByBookId[__${bookReservation.book.id}__] ?:'-'}">Prochain Retour</span></td>
+                                    <td><span th:text="${reservationPositionList[__${bookReservation.book.id}__] ?:'-'}">Ma position</span></td>
+                                    <td>
+                                        <form th:action="@{/user/close-bookReservation}" method="get">
+                                            <input type="hidden" name="bookReservationId" th:value="${bookReservation.id}">
+                                            <button class="text-center" type="submit">Annuler</button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

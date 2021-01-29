@@ -129,7 +129,7 @@
                                         </small>
                                     </p>
                                     <p class="card-text">
-                                        <small class="text-muted" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}" th:text="'Date de retour : ' + ${endloanDateByBookId[__${book.id}__] ?:'-'}">
+                                        <small class="text-muted" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}" th:text="'Retour le ' + ${endloanDateByBookId[__${book.id}__] ?:'-'}">
                                             Date de Retour
                                         </small>
                                     </p>

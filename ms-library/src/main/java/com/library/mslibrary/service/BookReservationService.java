@@ -14,6 +14,9 @@ public interface BookReservationService {
     BookReservation closeBookReservation (Long bookReservationId);
     List<BookReservation> saveAll (List<BookReservation> bookReservationList);
     Integer nbBookReservation(Book book, List<String> bookReservationStatus);
+    BookReservation findBookReservationByUserIdAndByBookId(Long userId, Long bookId);
+    Integer computePositionOfBookReservation(BookReservation bookReservation);
     boolean computeIsReservationAvailable(Book book);
     List<String> getCurrentBookReservationStatusList();
+
 }

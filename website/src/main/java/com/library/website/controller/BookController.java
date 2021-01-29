@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,6 +71,15 @@ public class BookController {
                         k.getValue()
                 ));
 
+        if (user != null) {
+        List<BookReservationBean> userBookReservationList = msLibraryProxy.getBookReservationsByUserId(user.getId());
+            for (BookBean book : bookList) {
+                if (userBookReservationList.stream().anyMatch(e -> e.getBook().getId() == book.getId())) {
+                    book.setReservationAvailable(false);
+                }
+            }
+        }
+
         LOGGER.info("Réception d'une liste de {} livres.", bookList.size());
         model.addAttribute("bookList", bookList);
         model.addAttribute("nbBookReservationByBookId", nbBookReservationByBookId);
@@ -117,4 +127,9 @@ public class BookController {
 
         return "redirect:/livres";
     }
+
+/*    private Boolean checkReservation(Long bookId, Long userId) {
+        List<BookReservationBean> userBookReservationList = msLibraryProxy.getBookReservationsByUserId(userId);
+        return userBookReservationList.stream().anyMatch(e -> e.getBook().getId()==bookId);
+    }*/
 }

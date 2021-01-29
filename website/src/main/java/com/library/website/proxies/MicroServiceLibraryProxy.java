@@ -49,10 +49,16 @@ public interface MicroServiceLibraryProxy {
     List<BookReservationBean> getBookReservationsList();
 
     @GetMapping(value= "/findBookReservationsListByUserId/{userId}")
-    List<BookReservationBean> getBookReservationsByUserId(@PathVariable String userId);
+    List<BookReservationBean> getBookReservationsByUserId(@PathVariable Long userId);
+
+    @GetMapping(value= "/getUserPositionsListInBookReservations/{userId}")
+    Map<Integer, Integer> getUserPositionsListInBookReservations(@PathVariable Long userId);
+
+    @GetMapping(value="/closeBookReservation/{bookReservationId}")
+    BookReservationBean closeBookReservation(@PathVariable Long bookReservationId);
 
     @GetMapping(value = "/userDetails")
-    UserDetails getUserDetails() ;
+    UserDetails getUserDetails();
 
     @GetMapping(value = "/findUserByEmail/{email}")
     UserBean getUserByEmail(@PathVariable String email);

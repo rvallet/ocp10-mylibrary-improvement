@@ -254,6 +254,10 @@ public class MsLibraryApplication implements CommandLineRunner {
 								appConfig.getBookLoanDuration()
 						)
 				);
+
+				for (BookLoan bookLoan : bookLoanList) {
+					bookLoan.setStartLoan(DateTools.addDays(new Date(), -RandomTools.randomNum(1, 5)));
+				}
 				bookLoanService.saveAll(bookLoanList);
 				LOGGER.info("Ajout de {} prêts de livres", bookLoanList.size());
 
@@ -269,8 +273,20 @@ public class MsLibraryApplication implements CommandLineRunner {
 						new BookReservation(
 								userService.findUserByEmail("email@user2.fr"),
 								bookService.findBookById(2L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user1.fr"),
+								bookService.findBookById(2L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user2.fr"),
+								bookService.findBookById(1L)
 						)
 				);
+				
+				for (BookReservation bookReservation : bookReservationList) {
+					bookReservation.setCreationDate(DateTools.addDays(new Date(), - RandomTools.randomNum(1,5)));
+				}
 				bookReservationService.saveAll(bookReservationList);
 				LOGGER.info("Ajout de {} réservations de livres", bookReservationList.size());
 
