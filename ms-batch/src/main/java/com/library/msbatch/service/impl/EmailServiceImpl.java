@@ -4,7 +4,9 @@ import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.config.EmailConfig;
 import com.library.msbatch.config.MailProperties;
 import com.library.msbatch.entities.BookLoanEmailReminder;
+import com.library.msbatch.entities.BookReservationEmailReminder;
 import com.library.msbatch.service.BookLoanEmailReminderService;
+import com.library.msbatch.service.BookReservationEmailReminderService;
 import com.library.msbatch.service.EmailService;
 import com.library.msbatch.utils.DateTools;
 import org.apache.commons.text.StringEscapeUtils;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -38,6 +41,9 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private BookLoanEmailReminderService bookLoanEmailReminderService;
 
+    @Autowired
+    private BookReservationEmailReminderService bookReservationEmailReminderService;
+
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
 
@@ -60,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendBookLoanReminderEmail() {
         List<BookLoanEmailReminder> bookLoanEmailReminderList = bookLoanEmailReminderService.findBookLoanEmailRemindersByIsEmailSentIsNot(true);
         LOGGER.debug("bookLoanEmailReminderList = {} (filter = {})", bookLoanEmailReminderList.size(), "true");
-        if (!bookLoanEmailReminderList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(bookLoanEmailReminderList)) {
             for (BookLoanEmailReminder bookLoanEmailReminder : bookLoanEmailReminderList) {
                 String text = String.format(
                         emailConfig.template().getText(),
@@ -76,6 +82,19 @@ public class EmailServiceImpl implements EmailService {
                 bookLoanEmailReminderService.saveBookLoanEmailReminder(bookLoanEmailReminder);
             }
         }
+    }
+
+    @Override
+    public void sendBookReservationReminderEmail() {
+        List<BookReservationEmailReminder> bookReservationEmailReminderList = bookReservationEmailReminderService.findBookReservationEmailRemindersByIsEmailSentIsNot(true);
+        LOGGER.debug("bookReservationEmailReminderList = {} (filter = {})", bookReservationEmailReminderList.size(), "true");
+        if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
+            for (BookReservationEmailReminder bookReservationEmailReminder : bookReservationEmailReminderList) {
+                // TODO : templating email , send and persist
+                LOGGER.info("Sending Available Reservation for 48H to {}", bookReservationEmailReminder.getUserEmail());
+            }
+        }
+
     }
 
 }

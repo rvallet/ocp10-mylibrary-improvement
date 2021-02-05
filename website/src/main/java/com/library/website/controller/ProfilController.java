@@ -4,6 +4,7 @@ import com.library.website.beans.BookBean;
 import com.library.website.beans.BookLoanBean;
 import com.library.website.beans.BookReservationBean;
 import com.library.website.beans.UserBean;
+import com.library.website.proxies.MicroServiceBatchProxy;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class ProfilController {
 
     @Autowired
     MicroServiceLibraryProxy msLibraryProxy;
+
+    @Autowired
+    MicroServiceBatchProxy msBatchProxy;
 
     @GetMapping("/user/profil")
     public String userProfil(Model model) {
@@ -120,6 +124,8 @@ public class ProfilController {
 
         if ("loanclosed".equalsIgnoreCase(action)) {
             msLibraryProxy.closeBookLoan(bookLoanId);
+            //TODO : send ms-batch info
+            msBatchProxy.sendBookAvailableNotification(bl.getBook().getId());
             LOGGER.debug("Cloture de l'emprunt id {}", bookLoanId);
             LOGGER.info("Cloture de l'emprunt id {} de l'utilisateur id {} par {} ({})", bookLoanId, bl.getUser().getId(), u.getEmail(), u.getRole());
         }

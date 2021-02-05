@@ -34,7 +34,6 @@ public class BookReservationController {
     public List<BookReservation> findBookReservationsListByUserId(@PathVariable Long userId) throws NoSuchResultException {
         LOGGER.debug("findBookReservationsListByUserId for userId = {}", userId);
         List<BookReservation> bookReservationList = bookReservationService.findBookReservationsByUserId(userId);
-        LOGGER.info("Envoi d'une liste de {} réservations", bookReservationList.size());
         //TODO : return pageable with properties
         LOGGER.debug("PageSizeLimit = {}", applicationPropertiesConfig.getPageSizeLimit());
         return bookReservationList;
@@ -44,6 +43,7 @@ public class BookReservationController {
     public List<BookReservation> findBookReservationsList() throws NoSuchResultException {
         List<BookReservation> bookReservationList = bookReservationService.findAll();
         LOGGER.info("Envoi d'une liste de {} réservations", bookReservationList.size());
+
         //TODO : return pageable with properties
         LOGGER.debug("PageSizeLimit = {}", applicationPropertiesConfig.getPageSizeLimit());
         return bookReservationList;
@@ -55,7 +55,9 @@ public class BookReservationController {
                 bookService.findBookById(bookId),
                 bookReservationService.getCurrentBookReservationStatusList()
         );
-        LOGGER.info("Récupération du nombre de réservation pour le Livre id {} : \n==> {} Réservations", bookId, result);
+        if (result > 0) {
+            LOGGER.info("Récupération du nombre de réservation pour le Livre id {} : \n==> {} Réservations", bookId, result);
+        }
         return result;
     }
 

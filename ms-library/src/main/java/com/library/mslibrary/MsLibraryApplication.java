@@ -82,6 +82,20 @@ public class MsLibraryApplication implements CommandLineRunner {
 							"user"
 					),
 					new User(
+							"email@user3.fr",
+							"user3_lastName",
+							"user3_firstName",
+							webSecurityConfig.passwordEncoder().encode("passwordUser3"),
+							"user"
+					),
+					new User(
+							"email@user4.fr",
+							"user4_lastName",
+							"user4_firstName",
+							webSecurityConfig.passwordEncoder().encode("passwordUser4"),
+							"user"
+					),
+					new User(
 							"email@admin1.fr",
 							"admin1_lastName",
 							"admin1_firstName",
@@ -211,7 +225,7 @@ public class MsLibraryApplication implements CommandLineRunner {
 				for (Book book : bookList) {
 					if (i>10) {i=RandomTools.randomNum(1,10);}
 					book.setOnline(true);
-					book.setStock(RandomTools.randomNum(0,5));
+					book.setStock(RandomTools.randomNum(1,5));
 					book.setNbCopy(RandomTools.randomNum(1,5));
 					book.setReservationAvailable(true);
 					if (book.getStock()>book.getNbCopy()) {
@@ -252,11 +266,22 @@ public class MsLibraryApplication implements CommandLineRunner {
 								userService.findUserByEmail("email@user2.fr"),
 								bookService.findBookById(1L),
 								appConfig.getBookLoanDuration()
+						),
+						new BookLoan(
+								userService.findUserByEmail("email@user3.fr"),
+								bookService.findBookById(3L),
+								appConfig.getBookLoanDuration()
+						),
+						new BookLoan(
+								userService.findUserByEmail("email@user4.fr"),
+								bookService.findBookById(4L),
+								appConfig.getBookLoanDuration()
 						)
 				);
 
 				for (BookLoan bookLoan : bookLoanList) {
 					bookLoan.setStartLoan(DateTools.addDays(new Date(), -RandomTools.randomNum(1, 5)));
+					bookLoan.setEndLoan(DateTools.addDays(bookLoan.getStartLoan(), appConfig.getBookLoanDuration()));
 				}
 				bookLoanService.saveAll(bookLoanList);
 				LOGGER.info("Ajout de {} prêts de livres", bookLoanList.size());
@@ -275,15 +300,23 @@ public class MsLibraryApplication implements CommandLineRunner {
 								bookService.findBookById(2L)
 						),
 						new BookReservation(
-								userService.findUserByEmail("email@user1.fr"),
+								userService.findUserByEmail("email@user3.fr"),
+								bookService.findBookById(1L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user4.fr"),
 								bookService.findBookById(2L)
 						),
 						new BookReservation(
-								userService.findUserByEmail("email@user2.fr"),
+								userService.findUserByEmail("email@user4.fr"),
 								bookService.findBookById(1L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user1.fr"),
+								bookService.findBookById(3L)
 						)
 				);
-				
+
 				for (BookReservation bookReservation : bookReservationList) {
 					bookReservation.setCreationDate(DateTools.addDays(new Date(), - RandomTools.randomNum(1,5)));
 				}
