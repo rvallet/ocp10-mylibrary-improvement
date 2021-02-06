@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +91,9 @@ public interface MicroServiceLibraryProxy {
 
     @GetMapping(value = "/closeBookLoan/{bookLoanId}")
     BookLoanBean closeBookLoan(@PathVariable Long bookLoanId);
+
+/*    @GetMapping(value = "/availableBookNotification/{bookId}")
+    void sendBookAvailableNotification(@PathVariable("bookId") Long bookId);*/
 
     @GetMapping(value="/getSearchCriteriaList")
     List<String> getSearchCriteriaList();

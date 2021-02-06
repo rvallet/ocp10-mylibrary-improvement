@@ -36,12 +36,12 @@ public class BookReservationEmailReminderJob {
 
     // Manual launch with wget "http://localhost:9095/feedBookReservationEmailReminderRepository"
     //@Scheduled(cron="0 0/1 * * * ?")
-    @Scheduled(cron="0 0 3 * * ?")
-    public void feedBookReservationEmailReminderRepository(){
+    //@Scheduled(cron="0 0 3 * * ?")
+    public void feedBookReservationEmailReminderRepository(Long bookId){
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");
 
-        bookReservationEmailReminderService.feedBookReservationEmailReminderRepository();
+        bookReservationEmailReminderService.feedBookReservationEmailReminderRepository(bookId);
 
         long t2 = System.currentTimeMillis();
         LOGGER.info("End Job ({} ms)", t2-t1);

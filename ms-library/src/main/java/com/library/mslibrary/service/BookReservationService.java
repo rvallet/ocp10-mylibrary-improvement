@@ -10,6 +10,7 @@ public interface BookReservationService {
     List<BookReservation> findAll();
     BookReservation findBookReservationById (Long id);
     List<BookReservation> findBookReservationsByUserId (Long userId);
+    List<BookReservation> findBookReservationsByBookId (Long bookId);
     BookReservation saveBookReservation (BookReservation bookReservation);
     BookReservation closeBookReservation (Long bookReservationId);
     List<BookReservation> saveAll (List<BookReservation> bookReservationList);

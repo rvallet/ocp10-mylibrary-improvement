@@ -1,6 +1,7 @@
 package com.library.website.service;
 
 import com.library.website.beans.UserBean;
+import com.library.website.proxies.MicroServiceBatchProxy;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     MicroServiceLibraryProxy msLibraryProxy;
+
+    @Autowired
+    MicroServiceBatchProxy microServiceBatchProxy;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

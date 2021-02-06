@@ -20,15 +20,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages="com.library")
 @EnableConfigurationProperties
 @EnableDiscoveryClient
+@EnableFeignClients("com.library.mslibrary")
 public class MsLibraryApplication implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MsLibraryApplication.class);

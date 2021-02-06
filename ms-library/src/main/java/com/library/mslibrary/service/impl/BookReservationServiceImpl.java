@@ -4,6 +4,7 @@ import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
+import com.library.mslibrary.proxies.MicroServiceBatchProxy;
 import com.library.mslibrary.repository.BookReservationRepository;
 import com.library.mslibrary.service.BookReservationService;
 import org.slf4j.Logger;
@@ -38,8 +39,23 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public List<BookReservation> findBookReservationsByUserId(Long userId) {
-        List<BookReservation> bookReservationList = bookReservationRepository.findBookReservationsByUserId(userId, getCurrentBookReservationStatusList());
+        List<BookReservation> bookReservationList = bookReservationRepository.findBookReservationsByUserIdAndFilteredByStatusList(userId, getCurrentBookReservationStatusList());
         LOGGER.info("Envoie d'une liste de {} reservations (utilisateur id = {}).", bookReservationList.size(), userId);
+        return bookReservationList;
+    }
+
+    @Override
+    public List<BookReservation> findBookReservationsByBookId(Long bookId) {
+        List<BookReservation> bookReservationList = bookReservationRepository.findBookReservationsByBookIdAndFilteredByStatusList(bookId, getCurrentBookReservationStatusList());
+        LOGGER.info(
+                "Envoie d'une liste de {} réservations (livre id = {})",
+                bookReservationList.size(),
+                bookId);
+        bookReservationList.forEach(e -> LOGGER.info(
+                "Utilisateur : {} - Date de réservation : {} (Status {})",
+                e.getUser().getEmail(),
+                e.getCreationDate(),
+                e.getReservationStatus()));
         return bookReservationList;
     }
 
@@ -65,19 +81,19 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public Integer nbBookReservation(Book book, List<String> bookReservationStatus) {
-        return bookReservationRepository.countBookReservationByBookAndReservationStatus(book, bookReservationStatus);
+        return bookReservationRepository.countBookReservationByBookAndFilteredByStatusList(book, bookReservationStatus);
     }
 
     @Override
     public BookReservation findBookReservationByUserIdAndByBookId(Long userId, Long bookId) {
-        return bookReservationRepository.findBookReservationsByUserIdAndByBookId(userId, bookId, getCurrentBookReservationStatusList());
+        return bookReservationRepository.findBookReservationsByUserIdAndByBookIdAndFilteredByStatusList(userId, bookId, getCurrentBookReservationStatusList());
     }
 
     @Override
     public Integer computePositionOfBookReservation(BookReservation bookReservation) {
         Integer result = 0;
         int index = 1;
-        List<BookReservation> brList = bookReservationRepository.findBookReservationsByBookId(bookReservation.getBook().getId(), getCurrentBookReservationStatusList());
+        List<BookReservation> brList = bookReservationRepository.findBookReservationsByBookIdAndFilteredByStatusList(bookReservation.getBook().getId(), getCurrentBookReservationStatusList());
         for (BookReservation br : brList) {
             if (br.getUser().getId() == bookReservation.getUser().getId()) {
                 result = index;
@@ -100,4 +116,5 @@ public class BookReservationServiceImpl implements BookReservationService {
     public List<String> getCurrentBookReservationStatusList() {
         return Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString());
     }
+
 }

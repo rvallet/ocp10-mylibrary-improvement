@@ -12,7 +12,7 @@ public interface BookReservationEmailReminderRepository extends JpaRepository<Bo
     List<BookReservationEmailReminder> findAll();
 
     /*
-     SELECT * FROM library_bdd.book_loan_email_reminder
+     SELECT * FROM library_bdd.book_reservation_email_reminder
      WHERE is_email_sent NOT IN (TRUE)
         */
     @Query("SELECT br FROM BookReservationEmailReminder br WHERE br.isEmailSent NOT IN (:isEmailSent)")

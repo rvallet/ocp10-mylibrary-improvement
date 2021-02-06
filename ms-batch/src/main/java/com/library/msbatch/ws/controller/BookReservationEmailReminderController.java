@@ -1,14 +1,11 @@
 package com.library.msbatch.ws.controller;
 
 import com.library.msbatch.api.ApiRegistration;
-import com.library.msbatch.job.BookLoanEmailReminderJob;
 import com.library.msbatch.job.BookReservationEmailReminderJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class BookReservationEmailReminderController {
@@ -27,13 +24,14 @@ public class BookReservationEmailReminderController {
     @GetMapping(value = ApiRegistration.FEED_BOOK_RESERVATION_EMAIL_REMINDER_DB)
     public void feedBookReservationEmailReminderRepository(){
         LOGGER.info("Reception d'une demande d'alimentation feedBookReservationEmailReminder en BDD");
-        bookReservationEmailReminderJob.feedBookReservationEmailReminderRepository();
+        // TODO
+        // bookReservationEmailReminderJob.feedBookReservationEmailReminderRepository();
     }
 
     @GetMapping(value=ApiRegistration.AVAILABLE_BOOK_NOTIFICATION + "/{bookId}")
-    public void getAvailableBookNotification(@RequestParam Long bookId){
-        // TODO
-        LOGGER.info("getAvailableBookNotification : BookId {}", bookId);
+    public void availableBookNotification(@PathVariable("bookId") Long bookId){
+        LOGGER.info("Reception d'une notification de livre disponible id {}", bookId);
+        bookReservationEmailReminderJob.feedBookReservationEmailReminderRepository(bookId);
     }
 
 }

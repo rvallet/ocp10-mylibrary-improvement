@@ -10,7 +10,7 @@ public interface BookReservationEmailReminderService {
 
     List<BookReservationBean> getBookReservationsList();
 
-    void feedBookReservationEmailReminderRepository();
+    void feedBookReservationEmailReminderRepository(Long bookId);
 
     void saveBookReservationEmailReminderList(List<BookReservationEmailReminder> bookReservationEmailReminderList);
 

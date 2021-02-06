@@ -4,14 +4,17 @@ import com.library.mslibrary.api.ApiRegistration;
 import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
+import com.library.mslibrary.proxies.MicroServiceBatchProxy;
 import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
 import com.library.mslibrary.ws.exception.NoSuchResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +37,7 @@ public class BookReservationController {
     public List<BookReservation> findBookReservationsListByUserId(@PathVariable Long userId) throws NoSuchResultException {
         LOGGER.debug("findBookReservationsListByUserId for userId = {}", userId);
         List<BookReservation> bookReservationList = bookReservationService.findBookReservationsByUserId(userId);
-        //TODO : return pageable with properties
+        // TODO : return pageable with properties
         LOGGER.debug("PageSizeLimit = {}", applicationPropertiesConfig.getPageSizeLimit());
         return bookReservationList;
     }
@@ -44,7 +47,7 @@ public class BookReservationController {
         List<BookReservation> bookReservationList = bookReservationService.findAll();
         LOGGER.info("Envoi d'une liste de {} réservations", bookReservationList.size());
 
-        //TODO : return pageable with properties
+        // TODO : return pageable with properties
         LOGGER.debug("PageSizeLimit = {}", applicationPropertiesConfig.getPageSizeLimit());
         return bookReservationList;
     }
@@ -112,6 +115,26 @@ public class BookReservationController {
                 "Archivage de la Réservation id {}",
                 bookReservationId);
         return bookReservationService.closeBookReservation(bookReservationId);
+    }
+
+/*    @GetMapping(value=ApiRegistration.AVAILABLE_BOOK_NOTIFICATION + "/{bookId}")
+    public void getAvailableBookNotification(@RequestParam Long bookId){
+        LOGGER.info("Réception d'une notification d'entrée en stock pour le livre id {}", bookId);
+        List<BookReservation> br = bookReservationService.findBookReservationsByBookId(bookId);
+        if (!CollectionUtils.isEmpty(br)) {
+            LOGGER.info("Envoie d'une liste de réservation pour le livre id {}", bookId);
+            bookReservationService.sendBookReservationListToMsBatch(br);
+            // TODO : feed ms-batch avec liste complète
+        } else {
+            // TODO :
+        }
+    }*/
+
+    @GetMapping(value=ApiRegistration.REST_GET_BOOK_RESERVATIONS_LIST + "/{bookId}")
+    public List<BookReservation> getBookReservationsList(@PathVariable("bookId") Long bookId) {
+        List<BookReservation> br = bookReservationService.findBookReservationsByBookId(bookId);
+        LOGGER.info("Envoie d'une liste de {} réservation(s) pour le livre id {}", br.size(), bookId);
+        return br;
     }
 
 }
