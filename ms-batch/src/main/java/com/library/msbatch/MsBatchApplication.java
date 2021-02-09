@@ -2,8 +2,8 @@ package com.library.msbatch;
 
 import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.config.MailProperties;
+import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.utils.DateTools;
-import com.nimbusds.jwt.util.DateUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,9 @@ public class MsBatchApplication implements CommandLineRunner {
 
 	@Autowired
 	MailProperties mailProperties;
+
+/*	@Autowired
+	MicroServiceLibraryProxy microServiceLibraryProxy;*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(MsBatchApplication.class, args);

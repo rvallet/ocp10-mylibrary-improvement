@@ -8,12 +8,10 @@ import java.util.List;
 
 public interface BookReservationEmailReminderRepository extends JpaRepository<BookReservationEmailReminder, Long> {
 
-    List<BookReservationEmailReminder> findAll();
-
     @Query("SELECT br FROM BookReservationEmailReminder br WHERE br.isEmailSent NOT IN (:isEmailSent)")
     List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent);
 
-    List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSent();
+    List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSent(Boolean isEmailSent) ;
 
     List<BookReservationEmailReminder> findBookReservationEmailRemindersByBookIdAndAndUserIdOrderByBookReservationIdDesc(Long bookId, Long userId);
 

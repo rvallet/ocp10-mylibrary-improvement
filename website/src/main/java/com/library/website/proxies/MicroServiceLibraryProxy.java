@@ -92,9 +92,6 @@ public interface MicroServiceLibraryProxy {
     @GetMapping(value = "/closeBookLoan/{bookLoanId}")
     BookLoanBean closeBookLoan(@PathVariable Long bookLoanId);
 
-/*    @GetMapping(value = "/availableBookNotification/{bookId}")
-    void sendBookAvailableNotification(@PathVariable("bookId") Long bookId);*/
-
     @GetMapping(value="/getSearchCriteriaList")
     List<String> getSearchCriteriaList();
 

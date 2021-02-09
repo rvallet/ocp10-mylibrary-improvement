@@ -5,7 +5,6 @@ import com.library.msbatch.config.EmailConfig;
 import com.library.msbatch.config.MailProperties;
 import com.library.msbatch.entities.BookLoanEmailReminder;
 import com.library.msbatch.entities.BookReservationEmailReminder;
-import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.service.BookLoanEmailReminderService;
 import com.library.msbatch.service.BookReservationEmailReminderService;
 import com.library.msbatch.service.EmailService;
@@ -43,9 +42,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private BookReservationEmailReminderService bookReservationEmailReminderService;
-
-    @Autowired
-    private MicroServiceLibraryProxy msLibraryProxy;
 
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
@@ -89,16 +85,19 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendBookReservationReminderEmail() {
-        List<BookReservationEmailReminder> bookReservationEmailReminderList = bookReservationEmailReminderService.findBookReservationEmailRemindersByIsEmailSentIsNot(true);
-        LOGGER.debug("bookReservationEmailReminderList = {} (filter = {})", bookReservationEmailReminderList.size(), "true");
+        List<BookReservationEmailReminder> bookReservationEmailReminderList = bookReservationEmailReminderService.findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean.TRUE);
+        LOGGER.debug("bookReservationEmailReminderList = {} (filter = {})", bookReservationEmailReminderList.size(), Boolean.TRUE);
         if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
             for (BookReservationEmailReminder bookReservationEmailReminder : bookReservationEmailReminderList) {
                 // TODO : templating email , send and persist
-                msLibraryProxy.changeBookReservationStatusToNotified(bookReservationEmailReminder.getBookReservationId());
-                LOGGER.info("Sending Available Reservation for 48H to {}", bookReservationEmailReminder.getUserEmail());
+                //msLibraryProxy.changeBookReservationStatusToNotified(bookReservationEmailReminder.getBookReservationId());
+                LOGGER.info(
+                        "Sending Available Reservation email (deadline {} to {})",
+                        DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline()),
+                        bookReservationEmailReminder.getUserEmail()
+                );
             }
         }
-
     }
 
 }

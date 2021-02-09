@@ -4,7 +4,6 @@ import com.library.msbatch.beans.BookReservationBean;
 import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.entities.BookReservationEmailReminder;
 import com.library.msbatch.proxies.MicroServiceLibraryProxy;
-import com.library.msbatch.repository.BookLoanEmailReminderRepository;
 import com.library.msbatch.repository.BookReservationEmailReminderRepository;
 import com.library.msbatch.service.BookReservationEmailReminderService;
 import com.library.msbatch.utils.DateTools;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -25,18 +23,13 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
     private static final Logger LOGGER = LoggerFactory.getLogger(BookReservationEmailReminderServiceImpl.class);
 
     @Autowired
-    private MicroServiceLibraryProxy msLibraryProxy;
+    MicroServiceLibraryProxy msLibraryProxy;
 
     @Autowired
     BookReservationEmailReminderRepository bookReservationEmailReminderRepository;
 
     @Autowired
     ApplicationPropertiesConfig applicationPropertiesConfig;
-
-    @Override
-    public List<BookReservationBean> getBookReservationsList() {
-        return null;
-    }
 
     @Override
     public void feedBookReservationEmailReminderRepository(Long bookId) {
@@ -86,14 +79,14 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
 
     @Override
     public void closeBookReservationAfterDeadline(){
-        bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSent()
+        bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSent(Boolean.TRUE)
                 .stream()
                 .filter(e -> isReservationNotificationDeadlineReached(e))
                 .forEach(e -> msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId()));
     }
 
     @Override
-    public List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(boolean isEmailSent) {
+    public List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent) {
         return bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSentIsNot(isEmailSent);
     }
 

@@ -25,7 +25,6 @@ public class BookReservationEmailReminderController {
     public void feedBookReservationEmailReminderRepository(){
         LOGGER.info("Reception d'une demande d'alimentation feedBookReservationEmailReminder en BDD");
         // TODO
-        // bookReservationEmailReminderJob.feedBookReservationEmailReminderRepository();
     }
 
     @GetMapping(value=ApiRegistration.AVAILABLE_BOOK_NOTIFICATION + "/{bookId}")
