@@ -13,6 +13,7 @@ public interface BookReservationService {
     List<BookReservation> findBookReservationsByBookId (Long bookId);
     BookReservation saveBookReservation (BookReservation bookReservation);
     BookReservation closeBookReservation (Long bookReservationId);
+    void changeBookReservationStatus(Long bookReservationId, String bookReservationStatus);
     List<BookReservation> saveAll (List<BookReservation> bookReservationList);
     Integer nbBookReservation(Book book, List<String> bookReservationStatus);
     BookReservation findBookReservationByUserIdAndByBookId(Long userId, Long bookId);

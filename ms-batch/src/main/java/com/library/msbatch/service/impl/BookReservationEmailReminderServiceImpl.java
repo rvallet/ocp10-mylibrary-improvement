@@ -1,11 +1,13 @@
 package com.library.msbatch.service.impl;
 
 import com.library.msbatch.beans.BookReservationBean;
+import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.entities.BookReservationEmailReminder;
 import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.repository.BookLoanEmailReminderRepository;
 import com.library.msbatch.repository.BookReservationEmailReminderRepository;
 import com.library.msbatch.service.BookReservationEmailReminderService;
+import com.library.msbatch.utils.DateTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookReservationEmailReminderServiceImpl implements BookReservationEmailReminderService {
@@ -27,6 +30,9 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
     @Autowired
     BookReservationEmailReminderRepository bookReservationEmailReminderRepository;
 
+    @Autowired
+    ApplicationPropertiesConfig applicationPropertiesConfig;
+
     @Override
     public List<BookReservationBean> getBookReservationsList() {
         return null;
@@ -34,38 +40,65 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
 
     @Override
     public void feedBookReservationEmailReminderRepository(Long bookId) {
-        List<BookReservationEmailReminder> result = new ArrayList<>();
         List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsList(bookId);
         if (!CollectionUtils.isEmpty(bookReservationList)) {
-            for (BookReservationBean br : bookReservationList) {
-                result.add(new BookReservationEmailReminder(
-                        br.getUser().getId(),
-                        br.getUser().getEmail(),
-                        br.getUser().getLastName(),
-                        br.getUser().getFirstName(),
-                        br.getBook().getId(),
-                        br.getBook().getTitle(),
-                        br.getId(),
-                        br.getCreationDate()
-                ));
+            Optional<BookReservationBean> br = bookReservationList
+                    .stream()
+                    .filter(o -> !checkBookReservationEmailReminderAlreadyExists(o))
+                    .findFirst();
+            if (br.isPresent()) {
+                BookReservationEmailReminder result = new BookReservationEmailReminder(
+                        br.get().getUser().getId(),
+                        br.get().getUser().getEmail(),
+                        br.get().getUser().getLastName(),
+                        br.get().getUser().getFirstName(),
+                        br.get().getBook().getId(),
+                        br.get().getBook().getTitle(),
+                        br.get().getId(),
+                        br.get().getCreationDate()
+                );
+                LOGGER.info("Ajout d'un BookReservationEmailReminder : {}", result);
+                bookReservationEmailReminderRepository.save(result);
             }
-            LOGGER.info("Ajout une liste de {} BookReservationEmailReminder", result.size());
-            bookReservationEmailReminderRepository.saveAll(result);
+            LOGGER.info("Aucun ajout de BookReservationEmailReminder nécessaire parmis les {}", bookReservationList.size());
         }
     }
 
-    @Override
-    public void saveBookReservationEmailReminderList(List<BookReservationEmailReminder> bookReservationEmailReminderList) {
+    private boolean checkBookReservationEmailReminderAlreadyExists(BookReservationBean bookReservation) {
+        boolean result = false;
+        List<BookReservationEmailReminder> bookReservationEmailReminderList =
+                bookReservationEmailReminderRepository
+                .findBookReservationEmailRemindersByBookIdAndAndUserIdOrderByBookReservationIdDesc(
+                    bookReservation.getBook().getId(),
+                    bookReservation.getUser().getId()
+                );
 
+        if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
+            result = bookReservationEmailReminderList
+                    .stream()
+                    .filter(e -> e.getSendingEmailDate().after(DateTools.addDays(new Date(), -60)))
+                    .findFirst()
+                    .isPresent();
+        }
+
+        return result;
     }
 
     @Override
-    public List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent) {
-        return null;
+    public void closeBookReservationAfterDeadline(){
+        bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSent()
+                .stream()
+                .filter(e -> isReservationNotificationDeadlineReached(e))
+                .forEach(e -> msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId()));
     }
 
     @Override
-    public void saveBookReservationEmailReminder(BookReservationEmailReminder bookReservationEmailReminder) {
-
+    public List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(boolean isEmailSent) {
+        return bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSentIsNot(isEmailSent);
     }
+
+    private boolean isReservationNotificationDeadlineReached(BookReservationEmailReminder bookReservationEmailReminder){
+        return bookReservationEmailReminder.getSendingEmailDate().before(DateTools.addDays(new Date(), - applicationPropertiesConfig.getBookReservationDeadline()));
+    }
+
 }

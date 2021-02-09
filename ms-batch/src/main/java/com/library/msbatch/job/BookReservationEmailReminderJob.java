@@ -34,19 +34,22 @@ public class BookReservationEmailReminderJob {
         LOGGER.info("End Job ({} ms)", t2-t1);
     }
 
-    // Manual launch with wget "http://localhost:9095/feedBookReservationEmailReminderRepository"
+    // Manual launch with wget "http://localhost:9095/closeBookReservation"
     //@Scheduled(cron="0 0/1 * * * ?")
-    //@Scheduled(cron="0 0 3 * * ?")
-    public void feedBookReservationEmailReminderRepository(Long bookId){
+    @Scheduled(cron="0 0 3 * * ?")
+    public void closeBookReservation(){
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");
 
-        bookReservationEmailReminderService.feedBookReservationEmailReminderRepository(bookId);
+        // TODO br.setReservationStatus(BookReservationStatusEnum.CLOSED.toString());
+        bookReservationEmailReminderService.closeBookReservationAfterDeadline();
 
         long t2 = System.currentTimeMillis();
         LOGGER.info("End Job ({} ms)", t2-t1);
     }
 
-
+    public void feedBookReservationEmailReminderRepository(Long bookId) {
+        bookReservationEmailReminderService.feedBookReservationEmailReminderRepository(bookId);
+    }
 
 }

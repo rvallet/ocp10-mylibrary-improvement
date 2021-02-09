@@ -75,6 +75,13 @@ public class BookReservationServiceImpl implements BookReservationService {
     }
 
     @Override
+    public void changeBookReservationStatus(Long bookReservationId, String bookReservationStatus) {
+        BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
+        br.setReservationStatus(bookReservationStatus);
+        bookReservationRepository.save(br);
+    }
+
+    @Override
     public List<BookReservation> saveAll(List<BookReservation> bookReservationList) {
         return bookReservationRepository.saveAll(bookReservationList);
     }
@@ -114,7 +121,10 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public List<String> getCurrentBookReservationStatusList() {
-        return Arrays.asList(BookReservationStatusEnum.IN_PROGRESS.toString());
+        return Arrays.asList(
+                BookReservationStatusEnum.IN_PROGRESS.toString(),
+                BookReservationStatusEnum.NOTIFIED.toString()
+        );
     }
 
 }

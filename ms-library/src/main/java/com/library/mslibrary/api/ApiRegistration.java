@@ -48,6 +48,10 @@ public interface ApiRegistration {
 
     String REST_CLOSE_BOOK_RESERVATION = "/closeBookReservation";
 
+    String REST_CHANGE_BOOK_RESERVATION_TO_NOTIFIED = "/changeBookReservationStatusToNotified";
+
+    String REST_CHANGE_BOOK_RESERVATION_TO_EXPIRED = "/changeBookReservationStatusToExpired";
+
     String AVAILABLE_BOOK_NOTIFICATION = "/availableBookNotification";
 
     String REST_GET_BOOK_RESERVATIONS_LIST = "/getBookReservationsList";

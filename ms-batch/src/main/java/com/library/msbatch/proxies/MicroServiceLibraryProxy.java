@@ -19,4 +19,15 @@ public interface MicroServiceLibraryProxy {
     @GetMapping(value="/getBookReservationsList/{bookId}")
     List<BookReservationBean> getBookReservationsList(@PathVariable Long bookId);
 
+    @GetMapping(value="/closeBookReservation/{bookReservationId}")
+    BookReservationBean closeBookReservation(@PathVariable Long bookReservationId);
+
+    @GetMapping(value="/changeBookReservationStatusToNotified/{bookReservationId}")
+    void changeBookReservationStatusToNotified(@PathVariable Long bookReservationId);
+
+    @GetMapping(value="/changeBookReservationStatusToExpired/{bookReservationId}")
+    void changeBookReservationStatusToExpired(@PathVariable Long bookReservationId);
+
+
+
 }

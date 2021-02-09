@@ -2,6 +2,8 @@ package com.library.msbatch;
 
 import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.config.MailProperties;
+import com.library.msbatch.utils.DateTools;
+import com.nimbusds.jwt.util.DateUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,20 @@ public class MsBatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LOGGER.info("\nMailTemplate =>\nObject: {}\nContent:\n{}", applicationPropertiesConfig.getObject(), StringEscapeUtils.escapeHtml4(applicationPropertiesConfig.getTemplate()));
-		LOGGER.info("\nMailProperties =>\nHost : {} \nPort : {} \nUserName: {} \nPassword : {}",mailProperties.getHost(), mailProperties.getPort(), mailProperties.getUsername(), mailProperties.getPassword());
+		LOGGER.info("\nMailTemplate BookLoan =>\nObject: {}\nContent:\n{}",
+				applicationPropertiesConfig.getBookLoanObject(),
+				StringEscapeUtils.escapeHtml4(applicationPropertiesConfig.getBookLoanTemplate())
+		);
+		LOGGER.info("\nMailTemplate BookReservation =>\nObject: {}\nContent:\n{}\nDeadline:\n{}",
+				applicationPropertiesConfig.getBookReservationObject(),
+				StringEscapeUtils.escapeHtml4(applicationPropertiesConfig.getBookReservationTemplate()),
+				DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline())
+		);
+		LOGGER.info("\nMailProperties =>\nHost : {} \nPort : {} \nUserName: {} \nPassword : {}",
+				mailProperties.getHost(),
+				mailProperties.getPort(),
+				mailProperties.getUsername(),
+				mailProperties.getPassword()
+		);
 	}
 }

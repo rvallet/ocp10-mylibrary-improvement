@@ -4,6 +4,7 @@ import com.library.mslibrary.api.ApiRegistration;
 import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
+import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 import com.library.mslibrary.proxies.MicroServiceBatchProxy;
 import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
@@ -117,18 +118,15 @@ public class BookReservationController {
         return bookReservationService.closeBookReservation(bookReservationId);
     }
 
-/*    @GetMapping(value=ApiRegistration.AVAILABLE_BOOK_NOTIFICATION + "/{bookId}")
-    public void getAvailableBookNotification(@RequestParam Long bookId){
-        LOGGER.info("Réception d'une notification d'entrée en stock pour le livre id {}", bookId);
-        List<BookReservation> br = bookReservationService.findBookReservationsByBookId(bookId);
-        if (!CollectionUtils.isEmpty(br)) {
-            LOGGER.info("Envoie d'une liste de réservation pour le livre id {}", bookId);
-            bookReservationService.sendBookReservationListToMsBatch(br);
-            // TODO : feed ms-batch avec liste complète
-        } else {
-            // TODO :
-        }
-    }*/
+    @GetMapping(value=ApiRegistration.REST_CHANGE_BOOK_RESERVATION_TO_NOTIFIED + "/{bookReservationId}")
+    public void changeBookReservationStatusToNotified (@PathVariable Long bookReservationId) {
+        bookReservationService.changeBookReservationStatus(bookReservationId, BookReservationStatusEnum.NOTIFIED.toString());
+    }
+
+    @GetMapping(value=ApiRegistration.REST_CHANGE_BOOK_RESERVATION_TO_EXPIRED + "/{bookReservationId}")
+    public void changeBookReservationStatusToExpired (@PathVariable Long bookReservationId) {
+        bookReservationService.changeBookReservationStatus(bookReservationId, BookReservationStatusEnum.EXPIRED.toString());
+    }
 
     @GetMapping(value=ApiRegistration.REST_GET_BOOK_RESERVATIONS_LIST + "/{bookId}")
     public List<BookReservation> getBookReservationsList(@PathVariable("bookId") Long bookId) {

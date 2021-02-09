@@ -1,6 +1,5 @@
 package com.library.msbatch.repository;
 
-import com.library.msbatch.entities.BookLoanEmailReminder;
 import com.library.msbatch.entities.BookReservationEmailReminder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +10,11 @@ public interface BookReservationEmailReminderRepository extends JpaRepository<Bo
 
     List<BookReservationEmailReminder> findAll();
 
-    /*
-     SELECT * FROM library_bdd.book_reservation_email_reminder
-     WHERE is_email_sent NOT IN (TRUE)
-        */
     @Query("SELECT br FROM BookReservationEmailReminder br WHERE br.isEmailSent NOT IN (:isEmailSent)")
-    List<BookLoanEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent);
+    List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent);
+
+    List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSent();
+
+    List<BookReservationEmailReminder> findBookReservationEmailRemindersByBookIdAndAndUserIdOrderByBookReservationIdDesc(Long bookId, Long userId);
 
 }

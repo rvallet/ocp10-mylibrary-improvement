@@ -5,11 +5,11 @@ import com.library.msbatch.config.EmailConfig;
 import com.library.msbatch.config.MailProperties;
 import com.library.msbatch.entities.BookLoanEmailReminder;
 import com.library.msbatch.entities.BookReservationEmailReminder;
+import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.service.BookLoanEmailReminderService;
 import com.library.msbatch.service.BookReservationEmailReminderService;
 import com.library.msbatch.service.EmailService;
 import com.library.msbatch.utils.DateTools;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +44,9 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private BookReservationEmailReminderService bookReservationEmailReminderService;
 
+    @Autowired
+    private MicroServiceLibraryProxy msLibraryProxy;
+
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
 
@@ -75,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
                         bookLoanEmailReminder.getBookTitle(),
                         DateTools.dateToStringPatternForEmail(bookLoanEmailReminder.getEndLoan()));
 
-                sendSimpleMessage(bookLoanEmailReminder.getUserEmail(), applicationPropertiesConfig.getObject()+" '"+ bookLoanEmailReminder.getBookTitle()+"'", text);
+                sendSimpleMessage(bookLoanEmailReminder.getUserEmail(), applicationPropertiesConfig.getBookLoanObject()+" '"+ bookLoanEmailReminder.getBookTitle()+"'", text);
 
                 bookLoanEmailReminder.setEmailSent(true);
                 bookLoanEmailReminder.setSendingEmailDate(new Date());
@@ -91,6 +94,7 @@ public class EmailServiceImpl implements EmailService {
         if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
             for (BookReservationEmailReminder bookReservationEmailReminder : bookReservationEmailReminderList) {
                 // TODO : templating email , send and persist
+                msLibraryProxy.changeBookReservationStatusToNotified(bookReservationEmailReminder.getBookReservationId());
                 LOGGER.info("Sending Available Reservation for 48H to {}", bookReservationEmailReminder.getUserEmail());
             }
         }
