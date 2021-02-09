@@ -50,10 +50,19 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                         br.get().getId(),
                         br.get().getCreationDate()
                 );
-                LOGGER.info("Ajout d'un BookReservationEmailReminder : {}", result);
+                LOGGER.info(
+                        "Ajout d'une entrée dans la table BookReservationEmailReminder\n==>Réservation Id {} (bookId: {} - user: {})",
+                        result.getBookReservationId(),
+                        result.getBookId(),
+                        result.getUserEmail()
+                );
                 bookReservationEmailReminderRepository.save(result);
+            } else {
+                LOGGER.info(
+                        "Aucun ajout de BookReservationEmailReminder nécessaire parmis les {}",
+                        bookReservationList.size()
+                );
             }
-            LOGGER.info("Aucun ajout de BookReservationEmailReminder nécessaire parmis les {}", bookReservationList.size());
         }
     }
 
@@ -69,9 +78,7 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
         if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
             result = bookReservationEmailReminderList
                     .stream()
-                    .filter(e -> e.getSendingEmailDate().after(DateTools.addDays(new Date(), -60)))
-                    .findFirst()
-                    .isPresent();
+                    .anyMatch(e -> e.getSendingEmailDate() == null || e.getSendingEmailDate().after(DateTools.addDays(new Date(), -60)));
         }
 
         return result;
