@@ -38,20 +38,25 @@ public class MsBatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LOGGER.info("\nMailTemplate BookLoan =>\nObject: {}\nContent:\n{}",
+		LOGGER.info("========== [START] CHARGEMENT DE LA CONFIG ==========");
+		LOGGER.info("******* TEMPLATE EMAIL EMPRUNT : *******\nObject: {}\nContent:\n{}",
 				applicationPropertiesConfig.getBookLoanObject(),
 				StringEscapeUtils.escapeHtml4(applicationPropertiesConfig.getBookLoanTemplate())
 		);
-		LOGGER.info("\nMailTemplate BookReservation =>\nObject: {}\nContent:\n{}\nDeadline:\n{}",
+
+		LOGGER.info("******* TEMPLATE EMAIL RESERVATION : *******\nObject: {}\nContent:\n{}\nDeadline: {}\nExpiration: {} jours",
 				applicationPropertiesConfig.getBookReservationObject(),
 				StringEscapeUtils.escapeHtml4(applicationPropertiesConfig.getBookReservationTemplate()),
-				DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline())
+				DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline()),
+				applicationPropertiesConfig.getBookReservationExpiration()
 		);
-		LOGGER.info("\nMailProperties =>\nHost : {} \nPort : {} \nUserName: {} \nPassword : {}",
+
+		LOGGER.info("******* CONFIG EMAIL SENDER : *******\nHost : {} \nPort : {} \nUserName: {} \nPassword : {}",
 				mailProperties.getHost(),
 				mailProperties.getPort(),
 				mailProperties.getUsername(),
 				mailProperties.getPassword()
 		);
+		LOGGER.info("========== [END] CHARGEMENT DE LA CONFIG   ========");
 	}
 }

@@ -38,10 +38,20 @@ public class EmailConfig {
     }
 
     @Bean
-    public SimpleMailMessage template() {
+    public SimpleMailMessage bookLoanTemplate() {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText(
          applicationPropertiesConfig.getBookLoanTemplate()
+        );
+
+        return message;
+    }
+
+    @Bean
+    public SimpleMailMessage bookReservationTemplate() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setText(
+                applicationPropertiesConfig.getBookReservationTemplate()
         );
 
         return message;

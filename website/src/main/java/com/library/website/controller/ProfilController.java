@@ -124,7 +124,7 @@ public class ProfilController {
 
         if ("loanclosed".equalsIgnoreCase(action)) {
             msLibraryProxy.closeBookLoan(bookLoanId);
-            //TODO : send ms-batch info
+            // We send a notification to ms-batch in order to warn the user who made a reservation if necessary
             msBatchProxy.sendBookAvailableNotification(bl.getBook().getId());
             LOGGER.debug("Cloture de l'emprunt id {}", bookLoanId);
             LOGGER.info("Cloture de l'emprunt id {} de l'utilisateur id {} par {} ({})", bookLoanId, bl.getUser().getId(), u.getEmail(), u.getRole());

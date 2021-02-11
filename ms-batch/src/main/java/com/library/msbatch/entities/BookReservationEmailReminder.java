@@ -34,6 +34,8 @@ public class BookReservationEmailReminder implements Serializable {
     private Boolean isEmailSent;
 
     public BookReservationEmailReminder() {
+        super();
+        this.isEmailSent = false;
     }
 
     public BookReservationEmailReminder(Long userId, String userEmail, String lastname, String firstname, Long bookId, String bookTitle, Long bookReservationId, Date bookReservationDate) {
@@ -45,6 +47,7 @@ public class BookReservationEmailReminder implements Serializable {
         this.bookTitle = bookTitle;
         this.bookReservationId = bookReservationId;
         this.bookReservationDate = bookReservationDate;
+        this.isEmailSent = false;
     }
 
     public Long getId() {

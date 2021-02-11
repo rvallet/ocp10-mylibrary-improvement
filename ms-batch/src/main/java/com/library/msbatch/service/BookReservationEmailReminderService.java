@@ -11,6 +11,8 @@ public interface BookReservationEmailReminderService {
 
     void closeBookReservationAfterDeadline();
 
+    void saveBookReservationEmailReminder(BookReservationEmailReminder bookReservationEmailReminder);
+
     List<BookReservationEmailReminder> findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean isEmailSent);
 
 }

@@ -78,7 +78,7 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
         if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
             result = bookReservationEmailReminderList
                     .stream()
-                    .anyMatch(e -> e.getSendingEmailDate() == null || e.getSendingEmailDate().after(DateTools.addDays(new Date(), -60)));
+                    .anyMatch(e -> e.getSendingEmailDate() == null || e.getSendingEmailDate().after(DateTools.addDays(new Date(), - applicationPropertiesConfig.getBookReservationExpiration())));
         }
 
         return result;
@@ -90,6 +90,11 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                 .stream()
                 .filter(e -> isReservationNotificationDeadlineReached(e))
                 .forEach(e -> msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId()));
+    }
+
+    @Override
+    public void saveBookReservationEmailReminder(BookReservationEmailReminder bookReservationEmailReminder) {
+        bookReservationEmailReminderRepository.save(bookReservationEmailReminder);
     }
 
     @Override

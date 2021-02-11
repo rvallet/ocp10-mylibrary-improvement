@@ -20,6 +20,8 @@ public class ApplicationPropertiesConfig {
 
     private int bookReservationDeadline;
 
+    private int bookReservationExpiration;
+
     public String getBookLoanTemplate() {
         return StringUtils.toEncodedString(bookLoanTemplate.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
     }
@@ -59,4 +61,13 @@ public class ApplicationPropertiesConfig {
     public void setBookReservationDeadline(int bookReservationDeadline) {
         this.bookReservationDeadline = bookReservationDeadline;
     }
+
+    public int getBookReservationExpiration() {
+        return bookReservationExpiration;
+    }
+
+    public void setBookReservationExpiration(int bookReservationExpiration) {
+        this.bookReservationExpiration = bookReservationExpiration;
+    }
+
 }

@@ -41,7 +41,6 @@ public class BookReservationEmailReminderJob {
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");
 
-        // TODO br.setReservationStatus(BookReservationStatusEnum.CLOSED.toString());
         bookReservationEmailReminderService.closeBookReservationAfterDeadline();
 
         long t2 = System.currentTimeMillis();

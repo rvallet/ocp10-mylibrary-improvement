@@ -1,5 +1,6 @@
 package com.library.msbatch.repository;
 
+import com.library.msbatch.entities.BookLoanEmailReminder;
 import com.library.msbatch.entities.BookReservationEmailReminder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

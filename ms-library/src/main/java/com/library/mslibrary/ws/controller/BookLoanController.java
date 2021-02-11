@@ -83,9 +83,15 @@ public class BookLoanController {
 
     @PostMapping(value= ApiRegistration.REST_CREATE_BOOK_LOAN)
     public void createBookLoan(@RequestBody BookLoan bookLoan) {
-        if (bookLoan==null || bookLoan.getBook()==null || bookLoan.getUser()==null) throw new NoSuchResultException("Demande d'enregistrement d'emprunt : ECHEC");
+        if (bookLoan==null || bookLoan.getBook()==null || bookLoan.getUser()==null) {
+            throw new NoSuchResultException("Demande d'enregistrement d'emprunt : ECHEC");
+        }
 
-        BookLoan bookLoanToCreate = new BookLoan(bookLoan.getUser(), bookLoan.getBook(), applicationPropertiesConfig.getBookLoanDuration());
+        BookLoan bookLoanToCreate = new BookLoan(
+                bookLoan.getUser(),
+                bookLoan.getBook(),
+                applicationPropertiesConfig.getBookLoanDuration()
+        );
         Book bookToUpdate = bookLoanToCreate.getBook();
 
         bookToUpdate.setStock(bookToUpdate.getStock()-1);
@@ -93,14 +99,25 @@ public class BookLoanController {
             bookToUpdate.setLoanAvailable(false);
         }
 
-        LOGGER.info("Création d'un emprunt (Ouvrage : {} - Usager : {}", bookLoanToCreate.getBook().getTitle(), bookLoanToCreate.getUser().getEmail());
+        LOGGER.info(
+                "Création d'un emprunt (Ouvrage : {} - Usager : {}",
+                bookLoanToCreate.getBook().getTitle(),
+                bookLoanToCreate.getUser().getEmail());
         bookService.saveBook(bookToUpdate);
         bookLoanService.saveBookLoan(bookLoanToCreate);
 
-        BookReservation br = bookReservationService.findBookReservationByUserIdAndByBookId(bookLoan.getUser().getId(), bookLoan.getBook().getId());
+        BookReservation br = bookReservationService.findBookReservationByUserIdAndByBookId(
+                bookLoan.getUser().getId(),
+                bookLoan.getBook().getId()
+        );
+
         if (br != null) {
             bookReservationService.closeBookReservation(br.getId());
-            LOGGER.info("Archivage d'une réservation suite à un emprunt \nRéservation id {} (Title : {} - userId : {})", br.getId(), br.getBook().getTitle(), br.getUser().getId());
+            LOGGER.info(
+                    "Archivage d'une réservation suite à un emprunt \nRéservation id {} (Title : {} - userId : {})",
+                    br.getId(),
+                    br.getBook().getTitle(),
+                    br.getUser().getId());
         }
     }
 
@@ -108,7 +125,10 @@ public class BookLoanController {
     public String getNextBookloanEndDate(@PathVariable Long bookId) {
         String result = bookLoanService.getNextBookloanEndDate(bookId);
         if (!result.isEmpty()) {
-            LOGGER.info("Prochaine échéance d'emprunt du Livre id {} : {}", bookId, result);
+            LOGGER.info(
+                    "Prochaine échéance d'emprunt du Livre id {} : {}",
+                    bookId,
+                    result);
         }
         return result;
     }
@@ -122,4 +142,3 @@ public class BookLoanController {
         return result;
     }
 }
-
