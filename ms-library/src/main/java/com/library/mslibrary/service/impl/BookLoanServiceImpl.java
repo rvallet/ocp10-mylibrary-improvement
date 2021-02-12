@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookLoanServiceImpl implements BookLoanService {
@@ -55,7 +52,7 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan extendBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        if (isExtendable(bl)) {
+        if (bl!=null && isExtendable(bl)) {
             bl.setLoanExtended(true);
             bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
             bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
