@@ -1,7 +1,9 @@
 package com.library.msbatch.service.impl;
 
 import com.library.msbatch.beans.BookLoanBean;
+import com.library.msbatch.beans.BookReservationBean;
 import com.library.msbatch.entities.BookLoanEmailReminder;
+import com.library.msbatch.entities.BookReservationEmailReminder;
 import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.repository.BookLoanEmailReminderRepository;
 import com.library.msbatch.service.BookLoanEmailReminderService;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -47,9 +50,10 @@ public class BookLoanEmailReminderServiceImpl implements BookLoanEmailReminderSe
             List<BookLoanBean> yesterdayBookLoanList = bookLoanBeanList.stream()
                     .filter(b -> b.getEndLoan().after(DateTools.yesterdayTheDayBefore()) && b.getEndLoan().before(new Date()))
                     .filter(b -> !b.getLoanStatus().equalsIgnoreCase("Terminé"))
+                    .filter(b -> checkIfBookLoanReminderShouldCreate(b))
                     .collect(Collectors.toList());
 
-            LOGGER.info("Filter bookLoanList : {}", yesterdayBookLoanList.size());
+            LOGGER.info("Filtered bookLoanList : {}", yesterdayBookLoanList.size());
 
             for (BookLoanBean bookLoan : yesterdayBookLoanList) {
                 result.add(new BookLoanEmailReminder(
@@ -65,6 +69,11 @@ public class BookLoanEmailReminderServiceImpl implements BookLoanEmailReminderSe
             }
             saveBookLoanEmailReminderList(result);
         }
+    }
+    private boolean checkIfBookLoanReminderShouldCreate(BookLoanBean bookLoan) {
+        List<BookLoanEmailReminder> bookLoanEmailReminderList = bookLoanEmailReminderRepository
+                .findBookLoanEmailRemindersByBookLoanId(bookLoan.getId());
+        return CollectionUtils.isEmpty(bookLoanEmailReminderList);
     }
 
     @Override
