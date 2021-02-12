@@ -6,4 +6,6 @@ public interface EmailService {
 
     void sendBookLoanReminderEmail();
 
+    void sendBookReservationReminderEmail();
+
 }

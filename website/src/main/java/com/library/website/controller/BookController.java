@@ -1,16 +1,21 @@
 package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
+import com.library.website.beans.BookReservationBean;
+import com.library.website.beans.UserBean;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -26,8 +31,7 @@ public class BookController {
             @RequestParam(name="searchCriteria", required = false) String searchCriteria,
             @RequestParam(name="searchValue", required = false) String searchValue,
             Model model) {
-
-        LOGGER.debug("Envoie d'une demande de listes de livres");
+        UserBean user = msLibraryProxy.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<BookBean> bookList = msLibraryProxy.getBookList();
         List<String> searchCriteriaList = msLibraryProxy.getSearchCriteriaList();
 
@@ -56,9 +60,32 @@ public class BookController {
             }
         }
 
+        Map<Integer, Integer> nbBookReservationByBookId = msLibraryProxy.getNbCurrentBookListReservation(bookList);
+        Map<Integer, String> endloanDateByBookId = msLibraryProxy.getNextBookloanEnddateList(bookList);
+        endloanDateByBookId
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> nextEndLoanDate: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
+
+        if (user != null) {
+        List<BookReservationBean> userBookReservationList = msLibraryProxy.getBookReservationsByUserId(user.getId());
+            for (BookBean book : bookList) {
+                if (userBookReservationList.stream().anyMatch(e -> e.getBook().getId() == book.getId())) {
+                    book.setReservationAvailable(false);
+                }
+            }
+        }
+
         LOGGER.info("Réception d'une liste de {} livres.", bookList.size());
         model.addAttribute("bookList", bookList);
+        model.addAttribute("nbBookReservationByBookId", nbBookReservationByBookId);
+        model.addAttribute("endloanDateByBookId", endloanDateByBookId);
         model.addAttribute("searchCriteriaList", searchCriteriaList );
+        model.addAttribute("user", user);
         return "livres";
     }
 
@@ -80,4 +107,29 @@ public class BookController {
         model.addAttribute("book", book);
         return "livre";
     }
+
+    @GetMapping("/reservation")
+    public String createBookReservation(
+            Model model,
+            @RequestParam(name = "id_book", required = false) Long bookId,
+            @RequestParam(name = "id_user", required = false) Long userId
+    ) {
+        if (bookId == null || userId ==null) {
+            LOGGER.error("Envoi d'une demande de reservation de livre id_book={} pour l'utilisateur id_user={}", bookId, userId);
+            return "redirect:/livres";
+        }
+
+        LOGGER.info("Envoi d'une demande de reservation de livre id_book={} pour l'utilisateur id_user={}", bookId, userId);
+        BookReservationBean bookReservation = new BookReservationBean();
+        bookReservation.setBook(msLibraryProxy.getBookById(bookId));
+        bookReservation.setUser(msLibraryProxy.getUserById(userId));
+        msLibraryProxy.createBookReservation(bookReservation);
+
+        return "redirect:/livres";
+    }
+
+/*    private Boolean checkReservation(Long bookId, Long userId) {
+        List<BookReservationBean> userBookReservationList = msLibraryProxy.getBookReservationsByUserId(userId);
+        return userBookReservationList.stream().anyMatch(e -> e.getBook().getId()==bookId);
+    }*/
 }

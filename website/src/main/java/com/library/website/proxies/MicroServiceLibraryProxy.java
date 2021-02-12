@@ -2,6 +2,7 @@ package com.library.website.proxies;
 
 import com.library.website.beans.BookBean;
 import com.library.website.beans.BookLoanBean;
+import com.library.website.beans.BookReservationBean;
 import com.library.website.beans.UserBean;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "ms-library")
 @RibbonClient(name = "ms-library")
@@ -42,8 +44,20 @@ public interface MicroServiceLibraryProxy {
     @GetMapping(value= "/getBookLoansList")
     List<BookLoanBean> getBookLoansList();
 
+    @GetMapping(value= "/getBookReservationsList")
+    List<BookReservationBean> getBookReservationsList();
+
+    @GetMapping(value= "/findBookReservationsListByUserId/{userId}")
+    List<BookReservationBean> getBookReservationsByUserId(@PathVariable Long userId);
+
+    @GetMapping(value= "/getUserPositionsListInBookReservations/{userId}")
+    Map<Integer, Integer> getUserPositionsListInBookReservations(@PathVariable Long userId);
+
+    @GetMapping(value="/closeBookReservation/{bookReservationId}")
+    BookReservationBean closeBookReservation(@PathVariable Long bookReservationId);
+
     @GetMapping(value = "/userDetails")
-    UserDetails getUserDetails() ;
+    UserDetails getUserDetails();
 
     @GetMapping(value = "/findUserByEmail/{email}")
     UserBean getUserByEmail(@PathVariable String email);
@@ -59,6 +73,18 @@ public interface MicroServiceLibraryProxy {
 
     @PostMapping(value = "/createBookLoan")
     BookLoanBean createBookLoan(@RequestBody BookLoanBean bookLoanBean);
+
+    @PostMapping(value = "/createBookReservation")
+    BookLoanBean createBookReservation(@RequestBody BookReservationBean bookReservationBean);
+
+    @GetMapping(value = "/getNbCurrentBookReservations")
+    BookLoanBean getNbCurrentBookReservation(@PathVariable Long bookId);
+
+    @PostMapping(value = "/getNbCurrentBookListReservations")
+    Map<Integer, Integer> getNbCurrentBookListReservation(@RequestBody List<BookBean> bookList);
+
+    @PostMapping(value = "/getNextBookloanEnddateList")
+    Map<Integer, String> getNextBookloanEnddateList(@RequestBody List<BookBean> bookList);
 
     @GetMapping(value = "/extendBookLoan/{bookLoanId}")
     BookLoanBean extendBookLoan(@PathVariable Long bookLoanId);

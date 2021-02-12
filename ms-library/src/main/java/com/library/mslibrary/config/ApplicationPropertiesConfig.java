@@ -11,6 +11,8 @@ public class ApplicationPropertiesConfig {
 
     private int bookLoanDuration;
 
+    private int bookReservationFactorLimit;
+
     public int getPageSizeLimit() {
         return pageSizeLimit;
     }
@@ -22,5 +24,9 @@ public class ApplicationPropertiesConfig {
     public int getBookLoanDuration() { return bookLoanDuration; }
 
     public void setBookLoanDuration(int bookLoanDuration) {this.bookLoanDuration = bookLoanDuration;}
+
+    public int getBookReservationFactorLimit() {return bookReservationFactorLimit;}
+
+    public void setBookReservationFactorLimit(int bookReservationFactorLimit) {this.bookReservationFactorLimit = bookReservationFactorLimit;}
 
 }

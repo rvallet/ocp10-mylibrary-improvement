@@ -23,9 +23,6 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    @Autowired
-    private ApplicationPropertiesConfig applicationPropertiesConfig;
-
     @GetMapping(value= ApiRegistration.REST_BOOKS_LIST)
     public List<Book> getBookList() throws NoSuchResultException {
         LOGGER.debug("getBookList from BookService");

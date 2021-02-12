@@ -10,24 +10,64 @@ import java.nio.charset.Charset;
 @ConfigurationProperties("config-ms-batch")
 public class ApplicationPropertiesConfig {
 
-    private String template;
+    private String bookLoanTemplate;
 
-    private String object;
+    private String bookLoanObject;
 
-    public String getTemplate() {
-        return StringUtils.toEncodedString(template.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
+    private String bookReservationTemplate;
+
+    private String bookReservationObject;
+
+    private int bookReservationDeadline;
+
+    private int bookReservationExpiration;
+
+    public String getBookLoanTemplate() {
+        return StringUtils.toEncodedString(bookLoanTemplate.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setBookLoanTemplate(String bookLoanTemplate) {
+        this.bookLoanTemplate = bookLoanTemplate;
     }
 
-    public String getObject() {
-        return StringUtils.toEncodedString(object.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
+    public String getBookLoanObject() {
+        return StringUtils.toEncodedString(bookLoanObject.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    public void setBookLoanObject(String bookLoanObject) {
+        this.bookLoanObject = bookLoanObject;
+    }
+
+    public String getBookReservationTemplate() {
+        return StringUtils.toEncodedString(bookReservationTemplate.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
+    }
+
+    public void setBookReservationTemplate(String bookReservationTemplate) {
+        this.bookReservationTemplate = bookReservationTemplate;
+    }
+
+    public String getBookReservationObject() {
+        return StringUtils.toEncodedString(bookReservationObject.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
+    }
+
+    public void setBookReservationObject(String bookReservationObject) {
+        this.bookReservationObject = bookReservationObject;
+    }
+
+    public int getBookReservationDeadline() {
+        return bookReservationDeadline;
+    }
+
+    public void setBookReservationDeadline(int bookReservationDeadline) {
+        this.bookReservationDeadline = bookReservationDeadline;
+    }
+
+    public int getBookReservationExpiration() {
+        return bookReservationExpiration;
+    }
+
+    public void setBookReservationExpiration(int bookReservationExpiration) {
+        this.bookReservationExpiration = bookReservationExpiration;
     }
 
 }

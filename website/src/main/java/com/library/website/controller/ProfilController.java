@@ -2,7 +2,9 @@ package com.library.website.controller;
 
 import com.library.website.beans.BookBean;
 import com.library.website.beans.BookLoanBean;
+import com.library.website.beans.BookReservationBean;
 import com.library.website.beans.UserBean;
+import com.library.website.proxies.MicroServiceBatchProxy;
 import com.library.website.proxies.MicroServiceLibraryProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +18,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProfilController {
@@ -28,6 +29,9 @@ public class ProfilController {
     @Autowired
     MicroServiceLibraryProxy msLibraryProxy;
 
+    @Autowired
+    MicroServiceBatchProxy msBatchProxy;
+
     @GetMapping("/user/profil")
     public String userProfil(Model model) {
         UserBean u = msLibraryProxy.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -36,6 +40,32 @@ public class ProfilController {
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansByUserId(u.getId().toString());
         model.addAttribute("bookLoanList" , bookLoanList);
 
+        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsByUserId(u.getId());
+        model.addAttribute("bookReservationList" , bookReservationList);
+
+        Map<Integer, Integer> reservationPositionList = msLibraryProxy.getUserPositionsListInBookReservations(u.getId());
+        reservationPositionList
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> Position: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
+        model.addAttribute("reservationPositionList" , reservationPositionList);
+
+        List<BookBean> bookList = bookReservationList.stream().map(e -> e.getBook()).collect(Collectors.toList());
+        Map<Integer, String> endloanDateByBookId = msLibraryProxy.getNextBookloanEnddateList(bookList);
+        model.addAttribute("endloanDateByBookId" , endloanDateByBookId);
+        endloanDateByBookId
+                .entrySet()
+                .stream()
+                .forEach(k -> LOGGER.debug(
+                        "bookId: {} --> nextEndLoanDate: {}",
+                        k.getKey(),
+                        k.getValue()
+                ));
+
         LOGGER.debug("bookLoanList : Size = {} (id du premier = {})",
             bookLoanList.size(),
             bookLoanList.isEmpty() ? "aucun" : bookLoanList.get(0).getId()
@@ -43,6 +73,15 @@ public class ProfilController {
         LOGGER.info("Chargement du profil {}", u.getEmail());
 
         return "user/profil";
+    }
+
+    @GetMapping(value="/user/close-bookReservation")
+    public String closeBookReservation(
+            @RequestParam (name="bookReservationId") Long bookReservationId
+    ){
+        msLibraryProxy.closeBookReservation(bookReservationId);
+        LOGGER.info("Envoi d'une demande d'archivage de la réservation id {}", bookReservationId);
+        return "redirect:/user/profil#nav-bookreservation";
     }
 
     @GetMapping("/user/update-bookloan")
@@ -98,6 +137,8 @@ public class ProfilController {
 
         if ("loanclosed".equalsIgnoreCase(action)) {
             msLibraryProxy.closeBookLoan(bookLoanId);
+            // We send a notification to ms-batch in order to warn the user who made a reservation if necessary
+            msBatchProxy.sendBookAvailableNotification(bl.getBook().getId());
             LOGGER.debug("Cloture de l'emprunt id {}", bookLoanId);
             LOGGER.info(
                     "Cloture de l'emprunt id {} de l'utilisateur id {} par {} ({})",
@@ -122,6 +163,10 @@ public class ProfilController {
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansList();
         model.addAttribute("bookLoanList", bookLoanList);
         LOGGER.info("Chargement de {} emprunts", bookLoanList.size());
+
+        List<BookReservationBean> bookReservationList = msLibraryProxy.getBookReservationsList();
+        model.addAttribute("bookReservationList", bookReservationList);
+        LOGGER.info("Chargement de {} reservations", bookReservationList.size());
 
         String email = "";
         String isbn = "";
@@ -199,6 +244,40 @@ public class ProfilController {
         }
 
         return "redirect:/admin/profil#nav-bookloan";
+    }
+
+    @PostMapping("/admin/create-bookReservation")
+    public String createBookReservation (
+            @RequestParam(name="email") String userEmail,
+            @RequestParam(name="isbn") String isbn,
+            Model model
+    ){
+        UserBean user = msLibraryProxy.getUserByEmail(userEmail);
+        BookBean book = msLibraryProxy.getBookByIsbn(isbn);
+
+        if (user == null) {
+            String errorUser = "Aucun utilisateur trouvé avec l'adresse : "+userEmail;
+            model.addAttribute("errorUser", errorUser);
+            LOGGER.info(errorUser);
+            return "redirect:/admin/profil#nav-bookreservation";
+        }
+
+        if (book == null) {
+            String errorBook = "Aucun livre trouvé avec l'ISBN "+isbn;
+            model.addAttribute("errorBook", errorBook);
+            LOGGER.info(errorBook);
+            return "redirect:/admin/profil#nav-bookreservation";
+        }
+
+        if (book != null && user != null) {
+            LOGGER.info("Envoie d'un enregistrement de réservation du livre {} pour l'utilisateur {}", book.getTitle(), user.getEmail());
+            BookReservationBean bookReservationBean = new BookReservationBean();
+            bookReservationBean.setUser(user);
+            bookReservationBean.setBook(book);
+            msLibraryProxy.createBookReservation(bookReservationBean);
+        }
+
+        return "redirect:/admin/profil#nav-bookreservation";
     }
 
     @GetMapping("/admin/profil/user/page/{pageNumber}")

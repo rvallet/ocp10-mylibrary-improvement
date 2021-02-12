@@ -25,9 +25,13 @@ public class BookBean {
 
     private Date releaseDate;
 
+    private int nbCopy;
+
     private int stock;
 
     private Boolean isLoanAvailable;
+
+    private Boolean isReservationAvailable;
 
     private Boolean isOnline;
 
@@ -111,6 +115,10 @@ public class BookBean {
         this.releaseDate = releaseDate;
     }
 
+    public int getNbCopy() {return nbCopy;}
+
+    public void setNbCopy(int nbCopy) {this.nbCopy = nbCopy;}
+
     public int getStock() {
         return stock;
     }
@@ -119,20 +127,20 @@ public class BookBean {
         this.stock = stock;
     }
 
-    public Boolean getLoanAvailable() {
-        return isLoanAvailable;
-    }
+    public Boolean getLoanAvailable() {return isLoanAvailable;}
 
-    public void setLoanAvailable(Boolean loanAvailable) {
-        isLoanAvailable = loanAvailable;
-    }
+    public void setLoanAvailable(Boolean loanAvailable) {this.isLoanAvailable = loanAvailable;}
+
+    public Boolean getReservationAvailable() {return isReservationAvailable;}
+
+    public void setReservationAvailable(Boolean reservationAvailable) {this.isReservationAvailable = reservationAvailable;}
 
     public Boolean getOnline() {
         return isOnline;
     }
 
     public void setOnline(Boolean online) {
-        isOnline = online;
+        this.isOnline = online;
     }
 
 }
