@@ -1,6 +1,7 @@
 package com.library.mslibrary.mock;
 
 import com.library.mslibrary.entities.BookLoan;
+import com.library.mslibrary.enumerated.BookLoanStatusEnum;
 import com.library.mslibrary.utils.DateTools;
 
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class BookLoanMock {
         );
         bl.setId(0L);
         bl.setEndLoan(DateTools.addDays(new Date(), -1));
+        bl.setLoanStatus(BookLoanStatusEnum.IN_PROGRESS.toString());
         return bl;
     }
 

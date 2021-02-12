@@ -8,6 +8,7 @@ import com.library.mslibrary.repository.BookLoanRepository;
 import com.library.mslibrary.repository.BookReservationRepository;
 import com.library.mslibrary.service.BookLoanService;
 import com.library.mslibrary.utils.DateTools;
+import com.library.mslibrary.ws.exception.NoSuchResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,11 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan extendBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        if (bl!=null && isExtendable(bl)) {
+        if (bookLoanId==null || bl ==null) {
+            throw new NoSuchResultException("Pas de résultat pour cet emprunt de livre "+bookLoanId);
+        }
+
+        if (isExtendable(bl)) {
             bl.setLoanExtended(true);
             bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
             bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
