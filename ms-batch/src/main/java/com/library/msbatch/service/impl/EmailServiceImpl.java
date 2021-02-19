@@ -103,7 +103,7 @@ public class EmailServiceImpl implements EmailService {
                         bookReservationEmailReminder.getFirstname(),
                         bookReservationEmailReminder.getBookTitle(),
                         DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline()),
-                        DateTools.dateToStringPatternForEmail(DateTools.addDays(bookReservationEmailReminder.getBookReservationDate(), applicationPropertiesConfig.getBookReservationDeadline())));
+                        DateTools.dateToStringPatternForEmail(DateTools.addDays(new Date(), applicationPropertiesConfig.getBookReservationDeadline())));
 
                 sendSimpleMessage(
                         bookReservationEmailReminder.getUserEmail(),
