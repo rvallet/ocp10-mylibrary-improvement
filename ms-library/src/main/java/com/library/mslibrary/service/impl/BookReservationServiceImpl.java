@@ -78,10 +78,10 @@ public class BookReservationServiceImpl implements BookReservationService {
     public void changeBookReservationStatus(Long bookReservationId, String bookReservationStatus) {
         BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
         br.setReservationStatus(bookReservationStatus);
-        if (bookReservationStatus.equals(BookReservationStatusEnum.NOTIFIED)) {
+        if (bookReservationStatus.equals(BookReservationStatusEnum.NOTIFIED.toString())) {
             br.setNotificationDate(new Date());
         }
-        if (bookReservationStatus.equals(BookReservationStatusEnum.CLOSED)) {
+        if (bookReservationStatus.equals(BookReservationStatusEnum.CLOSED.toString())) {
             br.setClosingDate(new Date());
         }
         bookReservationRepository.save(br);
