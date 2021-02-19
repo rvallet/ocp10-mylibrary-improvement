@@ -36,7 +36,7 @@ public class BookLoanMock {
                 bookLoanDuration
         );
         bl.setId(0L);
-        bl.setEndLoan(DateTools.addDays(new Date(), -1));
+        bl.setEndLoan(DateTools.addDays(new Date(), 1));
         bl.setLoanStatus(BookLoanStatusEnum.IN_PROGRESS.toString());
         return bl;
     }

@@ -2,12 +2,10 @@ package com.library.mslibrary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.library.mslibrary.ws.controller.BookReservationController;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 

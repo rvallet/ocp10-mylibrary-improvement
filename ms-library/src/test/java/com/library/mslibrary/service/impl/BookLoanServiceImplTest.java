@@ -18,14 +18,25 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration("classpath:test.properties")
+//@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+//@AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class BookLoanServiceImplTest {
 
     @Mock
@@ -34,9 +45,10 @@ public class BookLoanServiceImplTest {
     @InjectMocks
     private BookLoanServiceImpl bookLoanService;
 
+/*    @Autowired
+    private MockMvc mockMvc;*/
+
     @Test
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "sql/init_db.sql")
-    //@Sql(executionPhase = AFTER_TEST_METHOD, scripts = "sql/clean_db.sql")
     void findAllBookLoan(){
         List<BookLoan> bookLoanList = getMockBookLoanList();
 
@@ -50,13 +62,11 @@ public class BookLoanServiceImplTest {
     }
 
     @Test
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "sql/init_db.sql")
-    //@Sql(executionPhase = AFTER_TEST_METHOD, scripts = "sql/clean_db.sql")
     void findBookLoanById() {
         BookLoan bl = getMockBookLoan();
 
         given(bookLoanRepository.findBookLoanById(anyLong())).willReturn(bl);
-        //doReturn(bl).when(bookLoanRepository).findBookLoanById(anyLong());
+
         Assertions.assertEquals(
                 bl.getId(),
                 bookLoanService.findBookLoanById(bl.getId()).getId(),
@@ -65,8 +75,6 @@ public class BookLoanServiceImplTest {
     }
 
     @Test
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "sql/init_db.sql")
-    //@Sql(executionPhase = AFTER_TEST_METHOD, scripts = "sql/clean_db.sql")
     void findBookLoansByUserId(){
         List<BookLoan> bookLoanList = getMockBookLoanList();
 
@@ -74,14 +82,12 @@ public class BookLoanServiceImplTest {
 
         Assertions.assertEquals(
                 bookLoanList.size(),
-                bookLoanService.findAll().size(),
+                bookLoanService.findBookLoansByUserId(1L).size(),
                 "Liste des emprunts de livres par userId"
         );
     }
 
     @Test
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "sql/init_db.sql")
-    //@Sql(executionPhase = AFTER_TEST_METHOD, scripts = "sql/clean_db.sql")
     void saveBookLoan(){
         BookLoan bookLoan = getMockBookLoan();
 
@@ -89,22 +95,24 @@ public class BookLoanServiceImplTest {
 
         Assertions.assertEquals(
                 bookLoan.getId(),
-                bookLoanService.findBookLoanById(bookLoan.getId()).getId(),
+                bookLoanService.saveBookLoan(bookLoan).getId(),
                 "Enregistrement d'un emprunt"
         );
 
     }
 
     @Test
-    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "sql/init_db.sql")
-    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void extendBookLoan(){
         BookLoan bl1 = getMockBookLoanExtendable();
         bl1.setId(1L);
 
-        //bookLoanService.extendBookLoan(bl1.getId());
-        //Assertions.assertTrue(bl1.getLoanExtended());
-        //Assertions.assertNotEquals(0, bl1.getLoanExtended().compareTo(bl2.getLoanExtended()));
+        given(bookLoanRepository.findBookLoanById(anyLong())).willReturn(bl1);
+
+        BookLoan result = bookLoanService.extendBookLoan(1L);
+        Assertions.assertTrue(result.getLoanExtended());
 
     }
 
