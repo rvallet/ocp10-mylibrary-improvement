@@ -23,8 +23,8 @@ public class BookLoanEmailReminderJob {
     BookLoanEmailReminderService bookLoanEmailReminderService;
 
     // Manual launch with wget "http://localhost:9095/launchBookLoanEmailReminder"
-    //@Scheduled(cron="0/30 * * * * ?")
-    @Scheduled(cron="0 0 8 * * ?")
+    @Scheduled(cron="0/30 * * * * ?")
+    //@Scheduled(cron="0 0 8 * * ?")
     public void doJob(){
     long t1 = System.currentTimeMillis();
     LOGGER.info("Start Job");
@@ -36,8 +36,8 @@ public class BookLoanEmailReminderJob {
     }
 
     // Manual launch with wget "http://localhost:9095/feedBookLoanEmailReminderRepository"
-    //@Scheduled(cron="0 0/1 * * * ?")
-    @Scheduled(cron="0 0 3 * * ?")
+    @Scheduled(cron="0 0/1 * * * ?")
+    //@Scheduled(cron="0 0 3 * * ?")
     public void feedBookLoanEmailReminderRepository(){
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");

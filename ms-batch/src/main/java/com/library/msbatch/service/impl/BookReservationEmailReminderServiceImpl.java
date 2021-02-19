@@ -51,7 +51,7 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                         br.get().getCreationDate()
                 );
                 LOGGER.info(
-                        "Ajout d'une entrée dans la table BookReservationEmailReminder\n==>Réservation Id {} (bookId: {} - user: {})",
+                        "Ajout d'une entrée dans BookReservationEmailReminder\n==>Réservation Id {} (bookId: {} - user: {})",
                         result.getBookReservationId(),
                         result.getBookId(),
                         result.getUserEmail()
@@ -59,7 +59,7 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                 bookReservationEmailReminderRepository.save(result);
             } else {
                 LOGGER.info(
-                        "Aucun ajout de BookReservationEmailReminder nécessaire parmis les {}",
+                        "Aucun ajout de BookReservationEmailReminder nécessaire sur les {}",
                         bookReservationList.size()
                 );
             }
@@ -78,7 +78,12 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
         if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
             result = bookReservationEmailReminderList
                     .stream()
-                    .anyMatch(e -> e.getSendingEmailDate() == null || e.getSendingEmailDate().after(DateTools.addDays(new Date(), - applicationPropertiesConfig.getBookReservationExpiration())));
+                    .anyMatch(e -> e.getSendingEmailDate() == null || e.getSendingEmailDate().after(
+                            DateTools.addDays(
+                                    new Date(),
+                                    - applicationPropertiesConfig.getBookReservationExpiration()
+                            ))
+                    );
         }
 
         return result;
@@ -89,7 +94,14 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
         bookReservationEmailReminderRepository.findBookReservationEmailRemindersByIsEmailSent(Boolean.TRUE)
                 .stream()
                 .filter(e -> isReservationNotificationDeadlineReached(e))
-                .forEach(e -> msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId()));
+                .forEach(e -> {
+                    msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId());
+                    LOGGER.info(
+                            "Envoie d'une demande de fermeture de la réservation id {} (User: {})",
+                            e.getBookReservationId(),
+                            e.getUserEmail()
+                    );
+                });
     }
 
     @Override
@@ -103,7 +115,8 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
     }
 
     private boolean isReservationNotificationDeadlineReached(BookReservationEmailReminder bookReservationEmailReminder){
-        return bookReservationEmailReminder.getSendingEmailDate().before(DateTools.addDays(new Date(), - applicationPropertiesConfig.getBookReservationDeadline()));
+        return bookReservationEmailReminder.getSendingEmailDate()
+                .before(DateTools.addDays(new Date(), - applicationPropertiesConfig.getBookReservationDeadline()));
     }
 
 }

@@ -22,8 +22,8 @@ public class BookReservationEmailReminderJob {
     BookReservationEmailReminderService bookReservationEmailReminderService;
 
     // Manual launch with wget "http://localhost:9095/launchBookReservationEmailReminder"
-    //@Scheduled(cron="0/30 * * * * ?")
-    @Scheduled(cron="0 0 8 * * ?")
+    @Scheduled(cron="0/30 * * * * ?")
+    //@Scheduled(cron="0 0 8 * * ?")
     public void doJob(){
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");
@@ -35,8 +35,8 @@ public class BookReservationEmailReminderJob {
     }
 
     // Manual launch with wget "http://localhost:9095/closeBookReservation"
-    //@Scheduled(cron="0 0/1 * * * ?")
-    @Scheduled(cron="0 0 3 * * ?")
+    @Scheduled(cron="0 0/1 * * * ?")
+    //@Scheduled(cron="0 0 3 * * ?")
     public void closeBookReservation(){
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start Job");
