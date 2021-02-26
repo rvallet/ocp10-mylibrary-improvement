@@ -9,7 +9,7 @@ public class BookMock {
     private BookMock(){};
 
     public static Book getMockBook(){
-        return new Book(
+        Book book = new Book(
                 "title",
                 "description",
                 "author",
@@ -18,5 +18,7 @@ public class BookMock {
                 "isbn",
                 new Date()
         );
+        book.setId(0L);
+        return book;
     }
 }
