@@ -42,6 +42,6 @@ public class BookLoanMock {
     }
 
     public static List<BookLoan> getMockBookLoanList(){
-        return Arrays.asList(getMockBookLoan(),getMockBookLoan());
+        return Arrays.asList(getMockBookLoan(), getMockBookLoan());
     }
 }
