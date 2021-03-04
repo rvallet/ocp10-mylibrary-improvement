@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         for (UserRoleEnum role : UserRoleEnum.values()) {
             result.add(role.toString());
         }
-        LOGGER.info("Envoi d'une liste de {} critères de recherche", result.size());
+        LOGGER.info("Envoi d'une liste de {} rôles utilisateurs", result.size());
         return result;
     }
 
