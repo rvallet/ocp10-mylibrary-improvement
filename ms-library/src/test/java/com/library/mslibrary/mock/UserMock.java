@@ -3,6 +3,9 @@ package com.library.mslibrary.mock;
 import com.library.mslibrary.entities.User;
 import com.library.mslibrary.enumerated.UserRoleEnum;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class UserMock {
 
     private UserMock(){};
@@ -17,6 +20,10 @@ public class UserMock {
         );
         user.setId(0L);
         return user;
+    }
+
+    public static List<User> getMockUserList(){
+        return Arrays.asList(getMockUser(), getMockUser());
     }
 
     public static User getMockUserAdmin(){

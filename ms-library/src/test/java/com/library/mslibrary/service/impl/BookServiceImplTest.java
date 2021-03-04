@@ -51,7 +51,7 @@ public class BookServiceImplTest {
         Assertions.assertEquals(
                 idBook,
                 bookService.findBookById(idBook).getId(),
-                "Recherche de livra par bookId"
+                "Recherche de livre par bookId"
         );
     }
 
@@ -65,7 +65,7 @@ public class BookServiceImplTest {
         Assertions.assertEquals(
                 isbn,
                 bookService.findBookByIsbn(isbn).getIsbn(),
-                "Recherche de livra par ISBN"
+                "Recherche de livre par ISBN"
         );
     }
 
