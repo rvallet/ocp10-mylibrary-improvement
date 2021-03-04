@@ -23,6 +23,8 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static com.library.mslibrary.mock.UserMock.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -36,9 +38,6 @@ public class UserControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
-
-    @InjectMocks
-    UserController userController;
 
     @Test
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
@@ -104,7 +103,7 @@ public class UserControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
-    void saveUser() throws Exception {
+    void saveUser_UpdatedField() throws Exception {
         User dbUser = userService.findUserById(2L);
         dbUser.setFirstName("UpdatedUser");
 
@@ -124,6 +123,41 @@ public class UserControllerTest {
                 dbUser.getFirstName(),
                 resultUser.getFirstName(),
                 "UpdatedUser"
+        );
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void saveUser_NewUser() throws Exception {
+        User user = getMockUser();
+        String email = "saveduser@junit.test";
+        user.setEmail(email);
+
+        // @formatter:off
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(ApiRegistration.REST_SAVE_USER)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(user))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        // @formatter:on
+
+        User resultUser = userService.findUserByEmail(email);
+
+        Assertions.assertEquals(
+                email,
+                resultUser.getEmail(),
+                "new user email"
+        );
+
+        Assertions.assertEquals(
+                7L,
+                resultUser.getId(),
+                "new user id"
         );
 
     }
