@@ -1,5 +1,6 @@
 package com.library.mslibrary.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 
 import javax.persistence.*;
@@ -25,10 +26,12 @@ public class BookReservation implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_book")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Book book;
 
     public BookReservation() {

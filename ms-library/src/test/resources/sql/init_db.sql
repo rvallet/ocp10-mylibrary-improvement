@@ -26,12 +26,8 @@ INSERT INTO `book_loan` (`id_book_loan`,`end_loan`,`is_loan_extended`,`loan_stat
 (5,'2021-02-23 16:21:48',0,'En cours',NULL,'2021-01-26 16:21:48',3,3),
 (6,'2021-02-10 16:21:48',0,'En cours',NULL,'2021-01-26 16:21:48',4,4);
 
-/*INSERT INTO `book_loan_email_reminder` (`id_book_loan_email_reminder`,`book_id`,`book_loan_id`,`book_title`,`end_loan`,`firstname`,`is_email_sent`,`lastname`,`sending_email_date`,`user_email`,`user_id`) VALUES
-(1,4,6,'titre4 Lorem ipsum','2021-02-10 16:21:48','user4_firstName',1,'user4_lastName','2021-02-12 10:22:30','email@user4.fr',4),
-(2,1,4,'titre1 Lorem ipsum','2021-02-10 16:21:48','user2_firstName',1,'user2_lastName','2021-02-12 10:22:30','email@user2.fr',2);
-
-INSERT INTO `book_reservation_email_reminder` (`id_book_reservation_email_reminder`,`book_id`,`book_reservation_date`,`book_reservation_id`,`book_title`,`firstname`,`is_email_sent`,`lastname`,`sending_email_date`,`user_email`,`user_id`) VALUES
-(1,2,'2021-01-29 16:26:02',7,'titre2 Lorem ipsum','user3_firstName',1,'user3_lastName','2021-02-12 10:23:00','email@user3.fr',3),
-(2,2,'2021-01-28 16:21:48',4,'titre2 Lorem ipsum','user4_firstName',1,'user4_lastName','2021-02-12 10:23:00','email@user4.fr',4),
-(3,2,'2021-02-11 16:21:48',2,'titre2 Lorem ipsum','user2_firstName',1,'user2_lastName','2021-02-12 10:23:00','email@user2.fr',2);*/
-
+INSERT INTO `book_reservation` (`id_book_reservation`,`closing_date`,`creation_date`,`notification_date`,`reservation_status`,`id_book`,`id_user`) VALUES
+(1,NULL,'2021-03-01 10:00:00',NULL,'En cours',1,1),
+(2,NULL,'2021-03-03 10:00:00',NULL,'En cours',2,2),
+(3,NULL,'2021-02-01 10:00:00',NULL,'En cours',1,2),
+(4,NULL,'2021-02-03 10:00:00','2021-03-05 10:00:00','Notification envoyée',2,3);

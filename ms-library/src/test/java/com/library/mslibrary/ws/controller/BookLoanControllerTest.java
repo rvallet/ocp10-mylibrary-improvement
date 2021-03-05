@@ -67,7 +67,7 @@ public class BookLoanControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(2))) // liste de 2 emprunts
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(userId)); // correspond au userId demandé
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].user.id").value(userId)); // correspond au userId demandé
         // @formatter:on
     }
 
@@ -299,12 +299,6 @@ public class BookLoanControllerTest {
         List<Book> bookList = Arrays.asList(
                 bookService.findBookById(bookId1),
                 bookService.findBookById(bookId2));
-
-        Assertions.assertEquals(
-                2,
-                bookList.size(),
-                "Nombre de livres"
-        );
 
         // @formatter:off
         mockMvc.perform( MockMvcRequestBuilders
