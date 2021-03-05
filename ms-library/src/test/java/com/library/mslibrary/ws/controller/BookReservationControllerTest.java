@@ -16,5 +16,47 @@ public class BookReservationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    void findBookReservationsListByUserId() {
 
+    }
+
+    void findBookReservationsList() {
+
+    }
+
+    void getNbCurrentBookReservations(){
+
+    }
+
+    void getNbCurrentBookListReservations(){
+
+    }
+
+    void getUserPositionInBookReservation(){
+
+    }
+
+    void getUserPositionsListInBookReservation(){
+
+    }
+
+    void createBookReservation(){
+
+    }
+
+    void closeBookReservation(){
+
+    }
+
+    void changeBookReservationStatusToNotified(){
+
+    }
+
+    void changeBookReservationStatusToExpired(){
+
+    }
+
+    void getBookReservationsList(){
+
+    }
 }

@@ -21,6 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -219,6 +220,7 @@ public class BookLoanControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Transactional
     void createBookLoan() throws Exception{
         final long bookId = 1L;
         final long userId = 1L;
@@ -246,7 +248,7 @@ public class BookLoanControllerTest {
                 initalBookLoanList.size() == resultBookLoanList.size() -1,
                 "Le nombre d'emprunt en BDD à augmenté de 1 pour ce livre");
 
-/*        BookLoan createdBookLoan = bookLoanService.findBookLoanById(expectedBookLoanId);
+        BookLoan createdBookLoan = bookLoanService.findBookLoanById(expectedBookLoanId);
 
         if (createdBookLoan != null) {
             Assertions.assertEquals(
@@ -256,13 +258,13 @@ public class BookLoanControllerTest {
             );
 
             Assertions.assertEquals(
-                    dbBook.getStock()-1,
+                    0,
                     createdBookLoan.getBook().getStock(),
-                    "BookLoan id = "+expectedBookLoanId
+                    "Mise à jour du stock "
             );
 
 
-        } else {throw new Exception("BookLoan id "+expectedBookLoanId+" non créé");}*/
+        } else {throw new Exception("BookLoan id "+expectedBookLoanId+" non créé");}
 
     }
 
@@ -316,7 +318,6 @@ public class BookLoanControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.1").value(expectedDateBook1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.2").value(expectedDateBook2));
         // @formatter:on
-
 
     }
 }
