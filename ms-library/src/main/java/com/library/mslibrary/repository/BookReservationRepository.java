@@ -20,7 +20,7 @@ public interface BookReservationRepository extends JpaRepository<BookReservation
     @Query("SELECT br FROM BookReservation br WHERE br.book.id = ?1 AND br.reservationStatus IN ?2 ORDER BY br.creationDate ASC")
     List<BookReservation> findBookReservationsByBookIdAndFilteredByStatusList(Long bookId, List<String> bookReservationStatus);
 
-    @Query("SELECT COUNT(br) FROM BookReservation br WHERE br.book = ?1 AND br.reservationStatus IN ?2 ORDER BY br.creationDate ASC")
+    @Query("SELECT COUNT(br) FROM BookReservation br WHERE br.book = ?1 AND br.reservationStatus IN ?2")
     Integer countBookReservationByBookAndFilteredByStatusList(Book book, List<String> bookReservationStatus);
 
     @Query("SELECT br FROM BookReservation br WHERE br.user.id = ?1 AND br.book.id = ?2 AND br.reservationStatus IN ?3 ORDER BY br.creationDate ASC")

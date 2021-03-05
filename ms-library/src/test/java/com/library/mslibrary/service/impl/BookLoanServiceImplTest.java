@@ -14,28 +14,20 @@ import org.junit.jupiter.api.Assertions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-//@ExtendWith(MockitoExtension.class)
 @SpringBootTest
-//@AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class BookLoanServiceImplTest {
 
@@ -47,9 +39,6 @@ public class BookLoanServiceImplTest {
 
     @InjectMocks
     private BookLoanServiceImpl bookLoanService;
-
-/*    @Autowired
-    private MockMvc mockMvc;*/
 
     @Test
     void findAllBookLoan(){
@@ -171,14 +160,9 @@ public class BookLoanServiceImplTest {
                 result.getBook().getReservationAvailable(),
                 "Passage du livre en disponible à la réservation"
         );
-
     }
 
-
     @Test
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
-    //@Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
-    //@Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void extendBookLoan(){
         BookLoan bl = getMockBookLoanExtendable();
         bl.setId(1L);
@@ -191,5 +175,4 @@ public class BookLoanServiceImplTest {
                 result.getLoanExtended(),
                 "Prolongation de l'emprunt");
     }
-
 }

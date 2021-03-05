@@ -108,6 +108,7 @@ public class BookReservationControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Transactional
     void getNbCurrentBookListReservations() throws Exception {
         final long bookId1 = 1L;
         final long bookId2 = 2L;

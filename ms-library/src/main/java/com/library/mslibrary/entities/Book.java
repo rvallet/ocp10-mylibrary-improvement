@@ -2,6 +2,8 @@ package com.library.mslibrary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -11,6 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="book", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
+@Transactional
 public class Book implements Serializable {
 
     @Id
