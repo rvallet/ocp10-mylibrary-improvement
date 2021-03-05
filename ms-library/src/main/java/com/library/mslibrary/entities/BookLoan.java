@@ -1,8 +1,9 @@
 package com.library.mslibrary.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.library.mslibrary.enumerated.BookLoanStatusEnum;
 import com.library.mslibrary.utils.DateTools;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="book_loan")
+//@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class BookLoan implements Serializable {
 
     @Id
@@ -29,12 +31,12 @@ public class BookLoan implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_book")
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Book book;
 
     public BookLoan() {

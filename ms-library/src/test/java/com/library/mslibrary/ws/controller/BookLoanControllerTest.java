@@ -1,6 +1,5 @@
 package com.library.mslibrary.ws.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.mslibrary.api.ApiRegistration;
 import com.library.mslibrary.entities.Book;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -162,34 +160,62 @@ public class BookLoanControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
-    void saveNewBookLoan() throws Exception {
-        BookLoan bookloan = getMockBookLoan();
+    void saveBookLoan() throws Exception {
+        final long bookLoanId = 1L;
+        final Book dbBook = bookService.findBookById(1L);
+        final User dbUser = userService.findUserById(1L);
+        final Date today = new Date();
 
-        List<BookLoan> initialDbBookLoanList = bookLoanService.findAll();
-        Assertions.assertEquals(
-                6,
-                initialDbBookLoanList.size(),
-                "Nombre d'emprunts en BDD avant ajout"
-        );
+        BookLoan initialDbBookloan = bookLoanService.findBookLoanById(bookLoanId);
+
+        initialDbBookloan.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
+        initialDbBookloan.setStartLoan(today);
+        initialDbBookloan.setEndLoan(today);
+        initialDbBookloan.setReturnLoan(today);
+        initialDbBookloan.setLoanExtended(true);
+        initialDbBookloan.setBook(dbBook);
+        initialDbBookloan.setUser(dbUser);
 
         // @formatter:off
         mockMvc.perform( MockMvcRequestBuilders
                 .post(ApiRegistration.REST_SAVE_BOOK_LOAN)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsBytes(bookloan))
+                .content(mapper.writeValueAsBytes(initialDbBookloan))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         // @formatter:on
 
-        List<BookLoan> resultDbBookLoanList = bookLoanService.findAll();
+        BookLoan resultDbBookloan = bookLoanService.findBookLoanById(bookLoanId);
+
+        Assertions.assertEquals(
+                initialDbBookloan.getId(),
+                resultDbBookloan.getId(),
+                "Id de l'emprunt inchangé");
 
         Assertions.assertTrue(
-                initialDbBookLoanList.size() == resultDbBookLoanList.size() -1,
-                "Le nombre d'emprunt en BDD à augmenté de 1");
+                resultDbBookloan.getLoanExtended(),
+                "Mise à jour de la prolongation l'emprunt");
+
+        Assertions.assertEquals(
+                BookLoanStatusEnum.EXTENDED.toString(),
+                resultDbBookloan.getLoanStatus(),
+                "Mise à jour du statut de l'emprunt");
+
+        Assertions.assertTrue(
+                today.compareTo(resultDbBookloan.getStartLoan()) == 0,
+                "Mise à jour de la date de début de l'emprunt");
+
+        Assertions.assertTrue(
+                today.compareTo(resultDbBookloan.getEndLoan()) == 0,
+                "Mise à jour de la date de din de l'emprunt");
+
+        Assertions.assertTrue(
+                today.compareTo(resultDbBookloan.getReturnLoan()) == 0,
+                "Mise à jour  de la date de retour de l'emprunt");
 
     }
 
-/*    @Test
+    @Test
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
@@ -220,8 +246,7 @@ public class BookLoanControllerTest {
                 initalBookLoanList.size() == resultBookLoanList.size() -1,
                 "Le nombre d'emprunt en BDD à augmenté de 1 pour ce livre");
 
-        resultBookLoanList.removeAll(initalBookLoanList);
-        BookLoan createdBookLoan = resultBookLoanList.size() == 1 ? resultBookLoanList.get(0) : null;
+/*        BookLoan createdBookLoan = bookLoanService.findBookLoanById(expectedBookLoanId);
 
         if (createdBookLoan != null) {
             Assertions.assertEquals(
@@ -237,9 +262,9 @@ public class BookLoanControllerTest {
             );
 
 
-        } else {throw new Exception("BookLoan id "+expectedBookLoanId+" non créé");}
+        } else {throw new Exception("BookLoan id "+expectedBookLoanId+" non créé");}*/
 
-    }*/
+    }
 
     @Test
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
