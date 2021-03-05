@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.mslibrary.api.ApiRegistration;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
+import com.library.mslibrary.entities.User;
+import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
+import com.library.mslibrary.service.UserService;
+import com.library.mslibrary.utils.DateTools;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +24,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.library.mslibrary.mock.BookReservationMock.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,6 +46,9 @@ public class BookReservationControllerTest {
 
     @Autowired
     BookService bookService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -168,23 +177,137 @@ public class BookReservationControllerTest {
 
     }
 
-    void createBookReservation(){
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Transactional
+    void createBookReservation() throws Exception{
+        final long bookId = 1L;
+        final long userId = 1L;
+        final long expectedBookReservationId = 7L;
+        final Date today = new Date();
+        final Book dbBook = bookService.findBookById(bookId);
+        final User dbUser = userService.findUserById(userId);
+        BookReservation bookReservation = getMockBookReservation();
+        bookReservation.setBook(dbBook);
+        bookReservation.setUser(dbUser);
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .post(ApiRegistration.REST_CREATE_BOOK_RESERVATION)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(bookReservation))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        // @formatter:on
+
+        BookReservation createdBookReservation = bookReservationService.findBookReservationById(expectedBookReservationId);
+
+        if (createdBookReservation != null) {
+            Assertions.assertEquals(
+                    expectedBookReservationId,
+                    createdBookReservation.getId(),
+                    "BookReservation id = "+expectedBookReservationId
+            );
+
+            Assertions.assertTrue(
+                    DateTools.dateFormat(today).equals(DateTools.dateFormat(createdBookReservation.getCreationDate())),
+                    "Date de création"
+            );
+
+            Assertions.assertEquals(
+                    BookReservationStatusEnum.IN_PROGRESS.toString(),
+                    createdBookReservation.getReservationStatus(),
+                    "Status de la réservation"
+            );
+
+        } else {throw new Exception("BookReservation id "+expectedBookReservationId+" non créé");}
+
 
     }
 
-    void closeBookReservation(){
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void closeBookReservation() throws Exception {
+        final long bookReservationId = 1L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_CLOSE_BOOK_RESERVATION + "/" + bookReservationId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(bookReservationId)) // Match avec la reservation demandée
+                .andExpect(MockMvcResultMatchers.jsonPath("$.reservationStatus").value(BookReservationStatusEnum.CLOSED.toString())) // MaJ Statut
+                .andExpect(MockMvcResultMatchers.jsonPath("$.closingDate").exists()); // MaJ date de clôture
+        // @formatter:on
 
     }
 
-    void changeBookReservationStatusToNotified(){
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void changeBookReservationStatusToNotified() throws Exception {
+        final long bookReservationId = 1L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_CHANGE_BOOK_RESERVATION_TO_NOTIFIED + "/" + bookReservationId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        // @formatter:on
+
+        BookReservation result = bookReservationService.findBookReservationById(bookReservationId);
+
+        Assertions.assertEquals(
+                BookReservationStatusEnum.NOTIFIED.toString(),
+                result.getReservationStatus(),
+                "Mise à jour du statut"
+        );
 
     }
 
-    void changeBookReservationStatusToExpired(){
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void changeBookReservationStatusToExpired() throws Exception {
+        final long bookReservationId = 1L;
 
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_CHANGE_BOOK_RESERVATION_TO_EXPIRED + "/" + bookReservationId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        // @formatter:on
+
+        BookReservation result = bookReservationService.findBookReservationById(bookReservationId);
+
+        Assertions.assertEquals(
+                BookReservationStatusEnum.EXPIRED.toString(),
+                result.getReservationStatus(),
+                "Mise à jour du statut"
+        );
     }
 
-    void getBookReservationsList(){
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getBookReservationsList() throws Exception{
+        final long bookId = 1L;
 
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_BOOK_RESERVATIONS_LIST + "/" + bookId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(2)));
+        // @formatter:on
     }
 }
