@@ -1,5 +1,6 @@
 package com.library.mslibrary.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.library.mslibrary.enumerated.BookLoanStatusEnum;
 import com.library.mslibrary.utils.DateTools;
 
@@ -28,10 +29,12 @@ public class BookLoan implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_book")
+    @JsonIgnore
     private Book book;
 
     public BookLoan() {
