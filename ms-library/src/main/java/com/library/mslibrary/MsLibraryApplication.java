@@ -3,9 +3,11 @@ package com.library.mslibrary;
 import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookLoan;
+import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.entities.User;
 import com.library.mslibrary.security.WebSecurityConfig;
 import com.library.mslibrary.service.BookLoanService;
+import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
 import com.library.mslibrary.service.UserService;
 import com.library.mslibrary.utils.DateTools;
@@ -18,15 +20,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages="com.library")
 @EnableConfigurationProperties
 @EnableDiscoveryClient
+@EnableFeignClients("com.library.mslibrary")
 public class MsLibraryApplication implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MsLibraryApplication.class);
@@ -45,6 +49,9 @@ public class MsLibraryApplication implements CommandLineRunner {
 
 	@Autowired
 	private BookLoanService bookLoanService;
+
+	@Autowired
+	private BookReservationService bookReservationService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MsLibraryApplication.class, args);
@@ -74,6 +81,20 @@ public class MsLibraryApplication implements CommandLineRunner {
 							"user2_lastName",
 							"user2_firstName",
 							webSecurityConfig.passwordEncoder().encode("passwordUser2"),
+							"user"
+					),
+					new User(
+							"email@user3.fr",
+							"user3_lastName",
+							"user3_firstName",
+							webSecurityConfig.passwordEncoder().encode("passwordUser3"),
+							"user"
+					),
+					new User(
+							"email@user4.fr",
+							"user4_lastName",
+							"user4_firstName",
+							webSecurityConfig.passwordEncoder().encode("passwordUser4"),
 							"user"
 					),
 					new User(
@@ -206,7 +227,12 @@ public class MsLibraryApplication implements CommandLineRunner {
 				for (Book book : bookList) {
 					if (i>10) {i=RandomTools.randomNum(1,10);}
 					book.setOnline(true);
-					book.setStock(RandomTools.randomNum(0,5));
+					book.setStock(RandomTools.randomNum(1,5));
+					book.setNbCopy(RandomTools.randomNum(1,5));
+					book.setReservationAvailable(true);
+					if (book.getStock()>book.getNbCopy()) {
+						book.setStock(book.getNbCopy());
+					}
 					if ((book.getStock() < 1)) {
 						book.setLoanAvailable(false);
 					} else {
@@ -242,10 +268,62 @@ public class MsLibraryApplication implements CommandLineRunner {
 								userService.findUserByEmail("email@user2.fr"),
 								bookService.findBookById(1L),
 								appConfig.getBookLoanDuration()
+						),
+						new BookLoan(
+								userService.findUserByEmail("email@user3.fr"),
+								bookService.findBookById(3L),
+								appConfig.getBookLoanDuration()
+						),
+						new BookLoan(
+								userService.findUserByEmail("email@user4.fr"),
+								bookService.findBookById(4L),
+								appConfig.getBookLoanDuration()
 						)
 				);
+
+				for (BookLoan bookLoan : bookLoanList) {
+					bookLoan.setStartLoan(DateTools.addDays(new Date(), -RandomTools.randomNum(1, 5)));
+					bookLoan.setEndLoan(DateTools.addDays(bookLoan.getStartLoan(), appConfig.getBookLoanDuration()));
+				}
 				bookLoanService.saveAll(bookLoanList);
-				LOGGER.info("Ajout de {} prêt de livres", bookLoanList.size());
+				LOGGER.info("Ajout de {} prêts de livres", bookLoanList.size());
+
+			}
+
+			if (CollectionUtils.isEmpty(bookReservationService.findAll())) {
+				LOGGER.info("Création d'un jeu de données de réservation de livre en BDD");
+				List<BookReservation> bookReservationList = Arrays.asList(
+						new BookReservation(
+								userService.findUserByEmail("email@user1.fr"),
+								bookService.findBookById(1L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user2.fr"),
+								bookService.findBookById(2L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user3.fr"),
+								bookService.findBookById(1L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user4.fr"),
+								bookService.findBookById(2L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user4.fr"),
+								bookService.findBookById(1L)
+						),
+						new BookReservation(
+								userService.findUserByEmail("email@user1.fr"),
+								bookService.findBookById(3L)
+						)
+				);
+
+				for (BookReservation bookReservation : bookReservationList) {
+					bookReservation.setCreationDate(DateTools.addDays(new Date(), - RandomTools.randomNum(1,5)));
+				}
+				bookReservationService.saveAll(bookReservationList);
+				LOGGER.info("Ajout de {} réservations de livres", bookReservationList.size());
 
 			}
 		}

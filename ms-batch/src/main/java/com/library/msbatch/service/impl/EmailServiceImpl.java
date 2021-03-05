@@ -4,16 +4,19 @@ import com.library.msbatch.config.ApplicationPropertiesConfig;
 import com.library.msbatch.config.EmailConfig;
 import com.library.msbatch.config.MailProperties;
 import com.library.msbatch.entities.BookLoanEmailReminder;
+import com.library.msbatch.entities.BookReservationEmailReminder;
+import com.library.msbatch.proxies.MicroServiceLibraryProxy;
 import com.library.msbatch.service.BookLoanEmailReminderService;
+import com.library.msbatch.service.BookReservationEmailReminderService;
 import com.library.msbatch.service.EmailService;
 import com.library.msbatch.utils.DateTools;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -38,6 +41,12 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private BookLoanEmailReminderService bookLoanEmailReminderService;
 
+    @Autowired
+    private BookReservationEmailReminderService bookReservationEmailReminderService;
+
+    @Autowired
+    MicroServiceLibraryProxy msLibraryProxy;
+
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
 
@@ -60,20 +69,58 @@ public class EmailServiceImpl implements EmailService {
     public void sendBookLoanReminderEmail() {
         List<BookLoanEmailReminder> bookLoanEmailReminderList = bookLoanEmailReminderService.findBookLoanEmailRemindersByIsEmailSentIsNot(true);
         LOGGER.debug("bookLoanEmailReminderList = {} (filter = {})", bookLoanEmailReminderList.size(), "true");
-        if (!bookLoanEmailReminderList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(bookLoanEmailReminderList)) {
             for (BookLoanEmailReminder bookLoanEmailReminder : bookLoanEmailReminderList) {
                 String text = String.format(
-                        emailConfig.template().getText(),
+                        emailConfig.bookLoanTemplate().getText(),
                         bookLoanEmailReminder.getLastname(),
                         bookLoanEmailReminder.getFirstname(),
                         bookLoanEmailReminder.getBookTitle(),
                         DateTools.dateToStringPatternForEmail(bookLoanEmailReminder.getEndLoan()));
 
-                sendSimpleMessage(bookLoanEmailReminder.getUserEmail(), applicationPropertiesConfig.getObject()+" '"+ bookLoanEmailReminder.getBookTitle()+"'", text);
+                sendSimpleMessage(
+                        bookLoanEmailReminder.getUserEmail(),
+                        applicationPropertiesConfig.getBookLoanObject()+" '"+ bookLoanEmailReminder.getBookTitle()+"'",
+                        text
+                );
 
                 bookLoanEmailReminder.setEmailSent(true);
                 bookLoanEmailReminder.setSendingEmailDate(new Date());
                 bookLoanEmailReminderService.saveBookLoanEmailReminder(bookLoanEmailReminder);
+            }
+        }
+    }
+
+    @Override
+    public void sendBookReservationReminderEmail() {
+        List<BookReservationEmailReminder> bookReservationEmailReminderList = bookReservationEmailReminderService.findBookReservationEmailRemindersByIsEmailSentIsNot(Boolean.TRUE);
+        LOGGER.debug("bookReservationEmailReminderList = {} (filter = {})", bookReservationEmailReminderList.size(), Boolean.TRUE);
+        if (!CollectionUtils.isEmpty(bookReservationEmailReminderList)) {
+            for (BookReservationEmailReminder bookReservationEmailReminder : bookReservationEmailReminderList) {
+                String text = String.format(
+                        emailConfig.bookReservationTemplate().getText(),
+                        bookReservationEmailReminder.getLastname(),
+                        bookReservationEmailReminder.getFirstname(),
+                        bookReservationEmailReminder.getBookTitle(),
+                        DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline()),
+                        DateTools.dateToStringPatternForEmail(DateTools.addDays(new Date(), applicationPropertiesConfig.getBookReservationDeadline())));
+
+                sendSimpleMessage(
+                        bookReservationEmailReminder.getUserEmail(),
+                        applicationPropertiesConfig.getBookReservationObject()+" '"+ bookReservationEmailReminder.getBookTitle()+"'",
+                        text
+                );
+
+                bookReservationEmailReminder.setEmailSent(true);
+                bookReservationEmailReminder.setSendingEmailDate(new Date());
+                bookReservationEmailReminderService.saveBookReservationEmailReminder(bookReservationEmailReminder);
+                msLibraryProxy.changeBookReservationStatusToNotified(bookReservationEmailReminder.getBookReservationId());
+                LOGGER.info(
+                        "Sending Available Reservation email to {} (deadline : {} --> Expiration : {})",
+                        DateTools.nbJourInHourToString(applicationPropertiesConfig.getBookReservationDeadline()),
+                        bookReservationEmailReminder.getUserEmail(),
+                        DateTools.addDays(bookReservationEmailReminder.getBookReservationDate(), applicationPropertiesConfig.getBookReservationDeadline())
+                );
             }
         }
     }

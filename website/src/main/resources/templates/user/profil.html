@@ -43,6 +43,11 @@
                        role="tab" aria-controls="nav-history"
                        aria-selected="false">Mon Historique
                     </a>
+                    <a class="nav-item nav-link" id="nav-bookreservation-tab"
+                       data-toggle="tab" href="#nav-bookreservation"
+                       role="tab" aria-controls="nav-bookreservation"
+                       aria-selected="false">Mes Réservations
+                    </a>
                 </div>
             </nav>
 
@@ -170,6 +175,51 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 					Mes reservations de Livres -->
+                <div class="tab-pane fade" id="nav-bookreservation" role="tabpanel" aria-labelledby="nav-bookreservationtab">
+                    <div class="col-md-12" th:if="${bookReservationList==null or bookReservationList.isEmpty()}">
+                        <br />
+                        <h3>Mes Réservations</h3>
+                        <p>Vous n'avez aucune reservation de livres en cours</p>
+                    </div>
+                    <div class="col-md-12" th:if="${bookReservationList!=null and !bookReservationList.isEmpty()}">
+                        <br />
+                        <h3>Mes Réservations de livres</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Statut</th>
+                                    <th scope="col">Date de reservation</th>
+                                    <th scope="col">Prochain Retour</th>
+                                    <th scope="col">Ma position</th>
+                                    <th scope="col">Annulation</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="bookReservation:${bookReservationList}" th:if="${bookReservation.reservationStatus != 'Terminé'}">
+                                    <th scope="row"><span th:text="${bookReservation.id}">#</span></th>
+                                    <td><span th:text="${bookReservation.book?.title}">Titre</span></td>
+                                    <td><span th:text="${bookReservation.reservationStatus}">Statut</span></td>
+                                    <td><span th:text="${#dates.format(bookReservation.creationDate, 'dd/MM/yyyy')}">Date de reservation</span></td>
+                                    <td><span th:text="${endloanDateByBookId[__${bookReservation.book.id}__] ?:'-'}">Prochain Retour</span></td>
+                                    <td><span th:text="${reservationPositionList[__${bookReservation.book.id}__] ?:'-'}">Ma position</span></td>
+                                    <td>
+                                        <form th:action="@{/user/close-bookReservation}" method="get">
+                                            <input type="hidden" name="bookReservationId" th:value="${bookReservation.id}">
+                                            <button class="text-center" type="submit">Annuler</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 

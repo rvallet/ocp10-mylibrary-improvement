@@ -3,15 +3,10 @@ package com.library.msbatch.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -43,10 +38,20 @@ public class EmailConfig {
     }
 
     @Bean
-    public SimpleMailMessage template() {
+    public SimpleMailMessage bookLoanTemplate() {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText(
-         applicationPropertiesConfig.getTemplate()
+         applicationPropertiesConfig.getBookLoanTemplate()
+        );
+
+        return message;
+    }
+
+    @Bean
+    public SimpleMailMessage bookReservationTemplate() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setText(
+                applicationPropertiesConfig.getBookReservationTemplate()
         );
 
         return message;

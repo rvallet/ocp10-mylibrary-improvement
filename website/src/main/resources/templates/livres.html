@@ -2,6 +2,7 @@
 <html lang="fr"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{base}">
 
@@ -117,12 +118,40 @@
                                     <p class="card-text text-right"><small class="text-muted" th:text="'Publié le ' + ${#dates.format(book.releaseDate, 'dd/MM/yyyy')}">Date de publication</small></p>
                                 </div>
                                 <div class="card-footer">
-                                    <p class="card-text"><small class="text-muted" th:text="'Nb Exemplaire : ' + ${book.stock}">Stock</small></p>
+                                    <p class="card-text" th:if="${book.getLoanAvailable()}">
+                                        <small class="text-muted" th:text="'Nb Exemplaire : ' + ${book.stock}">
+                                            Stock
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}" th:text="'Nb Réservation : ' + ${nbBookReservationByBookId[__${book.id}__] ?:'0'}">
+                                            nbReservation
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted" th:if="${!book.getLoanAvailable() or !book.getReservationAvailable()}" th:text="'Retour le ' + ${endloanDateByBookId[__${book.id}__] ?:'-'}">
+                                            Date de Retour
+                                        </small>
+                                    </p>
                                     <form th:action="@{livre}" method="get">
                                         <input type="hidden" name="id_book" th:value="${book.id}"/>
-                                        <button type="submit" th:if="${book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">En savoir plus</button>
+                                        <button type="submit" th:if="${book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">
+                                            En savoir plus
+                                        </button>
                                     </form>
-                                    <button type="button" th:if="${!book.getLoanAvailable()}" th:disabled="${!book.getLoanAvailable()}" class="btn btn-secondary btn-block">
+                                    <form th:action="@{reservation}" sec:authorize="isAuthenticated()" method="get">
+                                        <input type="hidden" name="id_book" th:value="${book.id}"/>
+                                        <input type="hidden" name="id_user" th:value="${user.id}"/>
+                                        <button type="submit" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}" th:disabled="${!book.getReservationAvailable()}" class="btn btn-secondary btn-block">
+                                            Réserver
+                                        </button>
+                                    </form>
+                                    <form th:action="@{login}" sec:authorize="!isAuthenticated()" method="get">
+                                        <button type="submit" th:if="${!book.getLoanAvailable() and book.getReservationAvailable()}" th:disabled="${!book.getReservationAvailable()}" class="btn btn-secondary btn-block">
+                                            Réserver (login)
+                                        </button>
+                                    </form>
+                                    <button type="button" th:if="${!book.getLoanAvailable() and !book.getReservationAvailable()}" th:disabled="${!book.getLoanAvailable() or !book.getReservationAvailable()}" class="btn btn-secondary btn-block">
                                         Indisponible
                                     </button>
                                 </div>

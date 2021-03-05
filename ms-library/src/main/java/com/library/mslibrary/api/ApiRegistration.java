@@ -26,7 +26,35 @@ public interface ApiRegistration {
 
     String REST_BOOK_LOANS_LIST = "/getBookLoansList";
 
+    String REST_BOOK_RESERVATIONS_LIST = "/getBookReservationsList";
+
     String REST_BOOK_LOANS_LIST_BY_USER_ID = "/findBookLoansListByUserId";
+
+    String REST_BOOK_RESERVATIONS_LIST_BY_USER_ID = "/findBookReservationsListByUserId";
+
+    String REST_NB_CURRENT_BOOK_RESERVATIONS = "/getNbCurrentBookReservations";
+
+    String REST_NB_CURRENT_BOOKLIST_RESERVATIONS = "/getNbCurrentBookListReservations";
+
+    String REST_GET_USER_POSITION_IN_BOOK_RESERVATION = "/getUserPositionInBookReservation";
+
+    String REST_GET_USER_POSITIONS_LIST_IN_BOOK_RESERVATIONS = "/getUserPositionsListInBookReservations";
+
+    String REST_GET_NEXT_BOOKLOAN_ENDDATE = "/getNextBookloanEnddate";
+
+    String REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST = "/getNextBookloanEnddateList";
+
+    String REST_CREATE_BOOK_RESERVATION = "/createBookReservation";
+
+    String REST_CLOSE_BOOK_RESERVATION = "/closeBookReservation";
+
+    String REST_CHANGE_BOOK_RESERVATION_TO_NOTIFIED = "/changeBookReservationStatusToNotified";
+
+    String REST_CHANGE_BOOK_RESERVATION_TO_EXPIRED = "/changeBookReservationStatusToExpired";
+
+    String AVAILABLE_BOOK_NOTIFICATION = "/availableBookNotification";
+
+    String REST_GET_BOOK_RESERVATIONS_LIST = "/getBookReservationsList";
 
     String REST_BOOKS_LOANS = "/booksLoans";
 

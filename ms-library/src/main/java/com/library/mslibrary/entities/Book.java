@@ -2,16 +2,18 @@ package com.library.mslibrary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Table(name="book", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
+@Transactional
 public class Book implements Serializable {
 
     @Id
@@ -38,9 +40,13 @@ public class Book implements Serializable {
 
     private Date releaseDate;
 
+    private int nbCopy;
+
     private int stock;
 
     private Boolean isLoanAvailable;
+
+    private Boolean isReservationAvailable;
 
     private Boolean isOnline;
 
@@ -48,10 +54,15 @@ public class Book implements Serializable {
     @JsonIgnore
     private Collection<BookLoan> bookLoan;
 
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Collection<BookReservation> bookReservation;
+
     public Book() {
         super();
         this.isOnline = false;
         this.isLoanAvailable = false;
+        this.isReservationAvailable = false;
     }
 
     public Book(String title, String description, String author, String editor, String collection, String isbn, Date releaseDate) {
@@ -64,7 +75,8 @@ public class Book implements Serializable {
         this.isbn = isbn;
         this.releaseDate = releaseDate;
         this.isOnline = false;
-        this.isLoanAvailable = this.stock > 0;
+        this.isLoanAvailable = false;
+        this.isReservationAvailable = false;
     }
 
     public Long getId() {
@@ -139,13 +151,15 @@ public class Book implements Serializable {
         this.imgPathThAttribute = imgPathThAttribute;
     }
 
+    public int getNbCopy() {return nbCopy;}
+
+    public void setNbCopy(int nbCopy) {this.nbCopy = nbCopy;}
+
     public int getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+    public void setStock(int stock) {this.stock = stock;}
 
     public Date getReleaseDate() {
         return releaseDate;
@@ -171,6 +185,12 @@ public class Book implements Serializable {
         this.bookLoan = bookLoan;
     }
 
+    public Collection<BookReservation> getBookReservation() {
+        return bookReservation;
+    }
+
+    public void setBookReservation(Collection<BookReservation> bookReservation) {this.bookReservation = bookReservation;}
+
     public Boolean getLoanAvailable() {
         return isLoanAvailable;
     }
@@ -178,4 +198,9 @@ public class Book implements Serializable {
     public void setLoanAvailable(Boolean loanAvailable) {
         isLoanAvailable = loanAvailable;
     }
+
+    public Boolean getReservationAvailable() {return isReservationAvailable;}
+
+    public void setReservationAvailable(Boolean reservationAvailable) {isReservationAvailable = reservationAvailable;}
+
 }

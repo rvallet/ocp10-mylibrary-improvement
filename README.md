@@ -1,7 +1,8 @@
-# Bibliothèque en ligne myLibrary [OCP7]
-Développez le nouveau système d’information de la bibliothèque d’une grande ville
+# Améliorez le système d’information de la bibliothèque [OCP10]
 
-## Conception d'une application web et de micro-services 
+(voir dépôt [OCP7-MyLibrary](https://github.com/rvallet/ocp7-library))
+
+## Système d’information pour la gestion des bibliothèques - V2 
 
 ### Objet : 
 
@@ -29,28 +30,25 @@ L’envoi est automatique à la fréquence d’un par jour.
 
 
 ### Contexte :
+Vous travaillez au sein de la Direction du Système d’Information (DSI) de la mairie d’une grande ville,
+sous la direction de Patricia, la responsable du service.
+Lors d’une mission précédente, vous avez travaillé sur un système d’information pour la bibliothèque d'une grande ville.
 
-Vous travaillez au sein de la Direction du Système d’Information (DSI) de la mairie d’une grande ville, 
-sous la direction de la responsable du service. 
-La DSI est en charge de tous les traitements numériques pour la mairie et les structures qui lui sont rattachées, 
-comme la gestion du site web de la ville par exemple.
-Vous êtes missionné pour la réalisation des premiers produits !
-
-#### Travail demandé : Release 1.0
-- API Web Rest.
-- Application web framework MVC.
-- Batch de relance par email. 
+#### Travail demandé :
+- ...
+- ...
+- ...
 
 ### Livrables attendus :
-* Le code source des composants à développer de la Release 1.
-* Les scripts SQL de création de la base de données avec un jeu de données de démonstration.
-* Une documentation succincte expliquant comment déployer l'application.
+* -
+* -
+* -
 
 ## Installation & Déploiement
 
 ### Installation
 
-- Cloner les dépôts https://github.com/rvallet/ocp7-library & https://github.com/rvallet/library-config
+- Cloner les dépôts https://github.com/rvallet/ocp10-mylibrary-improvement & https://github.com/rvallet/library-config
 - Paramétrer une base de donnée MySQL en local dans les fichiers properties de library-config (port local, username, password)
 spring.datasource.url=jdbc:mysql://localhost:3306/library_bdd?useSSL=false&autoReconnect=true&verifyServerCertificate=false&serverTimezone=UTC
 spring.datasource.username=root
@@ -91,7 +89,7 @@ spring.datasource.password=admin
 
 * **Rémy VALLET** - *Initial work* - [rvallet](https://github.com/rvallet)
 
-<!-- Voir également la liste des [contributeurs](https://github.com/rvallet/ocp7-library/graphs/contributors) qui ont participés au projet. -->
+<!-- Voir également la liste des [contributeurs](https://github.com/rvallet/ocp10-mylibrary-improvement/graphs/contributors) qui ont participés au projet. -->
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/rvallet/ocp7-library/blob/feature-user/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/rvallet/ocp10-mylibrary-improvement/blob/main/LICENSE) file for details
