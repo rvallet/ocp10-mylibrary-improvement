@@ -32,6 +32,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static com.library.mslibrary.mock.BookLoanMock.*;
+import static com.library.mslibrary.mock.BookMock.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -68,6 +69,38 @@ public class BookLoanControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(2))) // liste de 2 emprunts
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].user.id").value(userId)); // correspond au userId demandé
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void findBookLoansListByUserId_KO_NoUser() throws Exception {
+        final long userId = 0L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_BOOK_LOANS_LIST_BY_USER_ID + "/" + userId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void findBookLoansListByUserId_KO_NoResult() throws Exception {
+        final long userId = 6L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_BOOK_LOANS_LIST_BY_USER_ID + "/" + userId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
         // @formatter:on
     }
 
@@ -123,6 +156,35 @@ public class BookLoanControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void extendBookLoan_KO_NonExtendable() throws Exception {
+        final long bookLoanId = 3L;
+
+        BookLoan dbBookLoan = bookLoanService.findBookLoanById(bookLoanId);
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_BOOK_LOANS_EXTEND + "/" + bookLoanId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(bookLoanId)); // correspond au bookLoanId demandé
+        // @formatter:on
+
+        BookLoan updatedBookLoan = bookLoanService.findBookLoanById(bookLoanId);
+
+        Assertions.assertFalse(
+                dbBookLoan.getLoanExtended(),
+                "L'emprunt n'a pas déjà été prolongé");
+        Assertions.assertFalse(
+                updatedBookLoan.getLoanExtended(),
+                "L'emprunt viens d'être prolongé");
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void closeBookLoan() throws Exception {
         final long bookLoanId = 1L;
 
@@ -144,6 +206,23 @@ public class BookLoanControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void closeBookLoan_KO() throws Exception {
+        final long bookLoanId = 0L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_BOOK_LOANS_CLOSE + "/" + bookLoanId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
+        // @formatter:on
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void findBookLoanById() throws Exception {
         final long bookLoanId = 6L;
 
@@ -154,6 +233,22 @@ public class BookLoanControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(bookLoanId)); // correspond au bookLoanId demandé
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void findBookLoanById_KO() throws Exception {
+        final long bookLoanId = 0L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_BOOK_LOAN_BY_ID + "/" + bookLoanId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
         // @formatter:on
     }
 
@@ -290,6 +385,23 @@ public class BookLoanControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getNextBookloanEndDate_KO() throws Exception {
+        final long bookId = 0L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE + "/" + bookId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
+        // @formatter:on
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void getNextBookloanEnddateList() throws Exception {
         final long bookId1 = 1L;
         final long bookId2 = 2L;
@@ -311,6 +423,59 @@ public class BookLoanControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(2))) // Map<Integer, String> avec 2 entrées
                 .andExpect(MockMvcResultMatchers.jsonPath("$.1").value(expectedDateBook1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.2").value(expectedDateBook2));
+        // @formatter:on
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getNextBookloanEnddateList_KO_NoDateFound() throws Exception {
+        final long bookId1 = 9L;
+        final long bookId2 = 10L;
+        final String expectedDateBook1 = "";
+        final String expectedDateBook2 = "";
+
+        List<Book> bookList = Arrays.asList(
+                bookService.findBookById(bookId1),
+                bookService.findBookById(bookId2));
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .post(ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(bookList))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(2))) // Map<Integer, String> avec 2 entrées
+                .andExpect(MockMvcResultMatchers.jsonPath("$.9").value(expectedDateBook1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.10").value(expectedDateBook2));
+        // @formatter:on
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getNextBookloanEnddateList_KO_UnexistingBook() throws Exception {
+        Book book = getMockBook();
+        book.setId(666L);
+        List<Book> bookList = Arrays.asList(book);
+        final String expectedDateBook = "";
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .post(ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE_LIST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(bookList))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*",hasSize(1))) // Map<Integer, String> avec 1 entrée
+                .andExpect(MockMvcResultMatchers.jsonPath("$.666").value(expectedDateBook));
         // @formatter:on
 
     }

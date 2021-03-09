@@ -85,13 +85,17 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan closeBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        bl.setReturnLoan(new Date());
-        bl.getBook().setStock(bl.getBook().getStock() +1);
-        bl.getBook().setLoanAvailable(true);
-        bl.setLoanStatus(BookLoanStatusEnum.CLOSED.toString());
-        bl.getBook().setReservationAvailable(true);
-        LOGGER.info("Clôture de l'emprunt id {} (Status {} - Date de retour : {})", bookLoanId, bl.getLoanStatus(), bl.getReturnLoan());
-        return bookLoanRepository.save(bl);
+        if (bl != null) {
+            bl.setReturnLoan(new Date());
+            bl.getBook().setStock(bl.getBook().getStock() + 1);
+            bl.getBook().setLoanAvailable(true);
+            bl.setLoanStatus(BookLoanStatusEnum.CLOSED.toString());
+            bl.getBook().setReservationAvailable(true);
+            LOGGER.info("Clôture de l'emprunt id {} (Status {} - Date de retour : {})", bookLoanId, bl.getLoanStatus(), bl.getReturnLoan());
+            return bookLoanRepository.save(bl);
+        } else {
+            return null;
+        }
     }
 
     @Override

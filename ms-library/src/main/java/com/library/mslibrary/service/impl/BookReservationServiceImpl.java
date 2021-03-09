@@ -67,23 +67,29 @@ public class BookReservationServiceImpl implements BookReservationService {
     @Override
     public BookReservation closeBookReservation(Long bookReservationId) {
         BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
-        br.setClosingDate(new Date());
-        br.setReservationStatus(BookReservationStatusEnum.CLOSED.toString());
-        LOGGER.info("Clôture de la réservation id {} (Status {} - Date de clôture: {})", bookReservationId, br.getReservationStatus(), br.getClosingDate());
-        return bookReservationRepository.save(br);
+        if (br != null) {
+            br.setClosingDate(new Date());
+            br.setReservationStatus(BookReservationStatusEnum.CLOSED.toString());
+            LOGGER.info("Clôture de la réservation id {} (Status {} - Date de clôture: {})", bookReservationId, br.getReservationStatus(), br.getClosingDate());
+            return bookReservationRepository.save(br);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void changeBookReservationStatus(Long bookReservationId, String bookReservationStatus) {
         BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
-        br.setReservationStatus(bookReservationStatus);
-        if (bookReservationStatus.equals(BookReservationStatusEnum.NOTIFIED.toString())) {
-            br.setNotificationDate(new Date());
+        if (br != null) {
+            br.setReservationStatus(bookReservationStatus);
+            if (bookReservationStatus.equals(BookReservationStatusEnum.NOTIFIED.toString())) {
+                br.setNotificationDate(new Date());
+            }
+            if (bookReservationStatus.equals(BookReservationStatusEnum.CLOSED.toString())) {
+                br.setClosingDate(new Date());
+            }
+            bookReservationRepository.save(br);
         }
-        if (bookReservationStatus.equals(BookReservationStatusEnum.CLOSED.toString())) {
-            br.setClosingDate(new Date());
-        }
-        bookReservationRepository.save(br);
     }
 
     @Override
@@ -93,7 +99,11 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public Integer nbBookReservation(Book book, List<String> bookReservationStatus) {
-        return bookReservationRepository.countBookReservationByBookAndFilteredByStatusList(book, bookReservationStatus);
+        if (book != null) {
+            return bookReservationRepository.countBookReservationByBookAndFilteredByStatusList(book, bookReservationStatus);
+        } else {
+            return 0;
+        }
     }
 
     @Override

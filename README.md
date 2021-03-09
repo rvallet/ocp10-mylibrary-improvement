@@ -54,11 +54,11 @@ spring.datasource.url=jdbc:mysql://localhost:3306/library_bdd?useSSL=false&autoR
 spring.datasource.username=root
 spring.datasource.password=admin
 - Lancer un serveur local de connexion à la BDD MySQL (ex: WampServer)
-- Importer le projet complet ocp7-library dans votre IDE Java (nécéssite la présence d'un module Sprint Boot, présente par défault dans IntelliJ ou Eclipse Sprint Tools Suite 4 "STS4")
+- Importer le projet complet ocp7-library dans votre IDE Java (nécessite la présence d'un module Sprint Boot, présente par défaut dans IntelliJ ou Eclipse Sprint Tools Suite 4 "STS4")
 - Lancer cloud-config (port 8888)
 - Lancer eureka-server (port 9102) 
-- Lancer les microservices ms-batch (port 9095) et ms-library (plusieurs instances possible, ex : port 9090 & 9092 avec 'VM options = -Dserver.port=9090')
-- Au premier démarrage les microservice vont créer les table de la BDD 'library_bdd' ainsi qu'un jeu de données de tests sur la table utilisateur (supprimer les tables pour regénérer le jeu de données)
+- Lancer les microservices ms-batch (port 9095) et ms-library (plusieurs instances possibles, ex : port 9090 & 9092 avec 'VM options = -Dserver.port=9090')
+- Au premier démarrage les microservice vont créer les table de la BDD 'library_bdd' ainsi qu'un jeu de données de tests sur la table 'utilisateur' (supprimer les tables pour regénérer le jeu de données)
 - Lancer le website MyLibrary
  
  * Notes
