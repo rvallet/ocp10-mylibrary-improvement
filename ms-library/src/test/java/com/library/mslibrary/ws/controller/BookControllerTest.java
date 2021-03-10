@@ -74,6 +74,21 @@ public class BookControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getBookById_KO() throws Exception {
+        long bookId = 0L;
+
+        // @formatter:off
+        mockMvc.perform( MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_BOOK_BY_ID + "/" + bookId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void getBookByIsbn() throws Exception {
         String isbn = "isbn2";
 
@@ -84,6 +99,22 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isbn").value(isbn));
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getBookByIsbn_KO() throws Exception {
+        String isbn = "isbn0";
+
+        // @formatter:off
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(ApiRegistration.REST_BOOK_BY_ISBN + "/" + isbn)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
         // @formatter:on
     }
 
