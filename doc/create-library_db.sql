@@ -12,6 +12,7 @@ CREATE TABLE `book` (
   `img_path_th_attribute` varchar(255) DEFAULT NULL,
   `is_loan_available` bit(1) DEFAULT NULL,
   `is_online` bit(1) DEFAULT NULL,
+  `is_reservation_available` bit(1) DEFAULT NULL,
   `isbn` varchar(255) DEFAULT NULL,
   `release_date` datetime DEFAULT NULL,
   `short_description` varchar(255) DEFAULT NULL,
@@ -38,6 +39,21 @@ CREATE TABLE `book_loan` (
   KEY `FKf48jwtplg1klh10uyefv174ic` (`id_user`)
 )
 
+-- library_bdd.book_reservation definition
+
+CREATE TABLE `book_reservation` (
+  `id_book_reservation` bigint(20) NOT NULL AUTO_INCREMENT,
+  `closing_date` datetime DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `notification_date` datetime DEFAULT NULL,
+  `reservation_status` varchar(255) DEFAULT NULL,
+  `id_book` bigint(20) DEFAULT NULL,
+  `id_user` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id_book_reservation`),
+  KEY `FKbfgjgsp65h2tispokmbl5yqcp` (`id_book`),
+  KEY `FK1fhw4suqf1tpj9x53v6a96cok` (`id_user`)
+)
+
 
 -- library_bdd.book_loan_email_reminder definition
 
@@ -56,6 +72,22 @@ CREATE TABLE `book_loan_email_reminder` (
   PRIMARY KEY (`id_book_loan_email_reminder`)
 )
 
+-- library_bdd.book_reservation_email_reminder definition
+
+CREATE TABLE `book_reservation_email_reminder` (
+  `id_book_reservation_email_reminder` bigint(20) NOT NULL AUTO_INCREMENT,
+  `book_id` bigint(20) DEFAULT NULL,
+  `book_reservation_date` datetime DEFAULT NULL,
+  `book_reservation_id` bigint(20) DEFAULT NULL,
+  `book_title` varchar(255) DEFAULT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `is_email_sent` bit(1) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `sending_email_date` datetime DEFAULT NULL,
+  `user_email` varchar(255) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id_book_reservation_email_reminder`)
+)
 
 -- library_bdd.`user` definition
 

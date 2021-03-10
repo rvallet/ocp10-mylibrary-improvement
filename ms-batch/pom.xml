@@ -12,7 +12,7 @@
 
 	<groupId>com.library</groupId>
 	<artifactId>ms-batch</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>ms-batch</name>
 	<description>Micro-service for email batch</description>
 

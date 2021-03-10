@@ -18,7 +18,7 @@
 	<!-- =============================================================== -->
 	<groupId>com.library</groupId>
 	<artifactId>website</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>website</name>
 	<description>myLibrary Bibliothèque en ligne</description>
@@ -84,10 +84,6 @@
 		</dependency>
 		
 		<!-- Starter load-balancer -->
-<!--		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
-		</dependency>-->
 
 		<!-- Starter conf ribbon -->
 		<dependency>
@@ -96,11 +92,7 @@
 		</dependency>
 		
 		<!-- Starter Zuul -->
-<!--		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-		</dependency>-->
-		
+
 		<!-- Starter Feign -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -108,15 +100,7 @@
 		</dependency>
 		
 		<!-- Starter Sleuth & Zipkin -->
-<!--		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-sleuth</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zipkin</artifactId>
-		</dependency>-->
-		
+
 		<!-- DEV TOOLS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

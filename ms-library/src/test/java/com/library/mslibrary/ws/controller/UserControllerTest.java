@@ -73,6 +73,21 @@ public class UserControllerTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
     @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getUserByEmail_KO() throws Exception {
+        String email = "none";
+        // @formatter:off
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_USER_BY_EMAIL + "/" + email)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
+        // @formatter:on
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
     void getUserById() throws Exception {
         long userId = 2L;
         // @formatter:off
@@ -82,6 +97,22 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(userId));
+        // @formatter:on
+
+    }
+
+    @Test
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:sql/init_db.sql")
+    @Sql(executionPhase = AFTER_TEST_METHOD, scripts = "classpath:sql/clean_db.sql")
+    void getUserById_KO() throws Exception {
+        long userId = 0L;
+        // @formatter:off
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(ApiRegistration.REST_GET_USER_BY_ID + "/" + userId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*").doesNotExist());
         // @formatter:on
 
     }

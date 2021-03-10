@@ -163,7 +163,7 @@ public class BookLoanServiceImplTest {
     }
 
     @Test
-    void extendBookLoan(){
+    void extendBookLoan_OK(){
         BookLoan bl = getMockBookLoanExtendable();
         bl.setId(1L);
 
@@ -172,6 +172,21 @@ public class BookLoanServiceImplTest {
 
         BookLoan result = bookLoanService.extendBookLoan(1L);
         Assertions.assertTrue(
+                result.getLoanExtended(),
+                "Prolongation de l'emprunt");
+    }
+
+    @Test
+    void extendBookLoan_KO(){
+        BookLoan bl = getMockBookLoanExtendable();
+        bl.setId(1L);
+        bl.setEndLoan(DateTools.addDays(new Date(), -1));
+
+        given(bookLoanRepository.findBookLoanById(anyLong())).willReturn(bl);
+        given(appConfig.getBookLoanDuration()).willReturn(30);
+
+        BookLoan result = bookLoanService.extendBookLoan(1L);
+        Assertions.assertFalse(
                 result.getLoanExtended(),
                 "Prolongation de l'emprunt");
     }
