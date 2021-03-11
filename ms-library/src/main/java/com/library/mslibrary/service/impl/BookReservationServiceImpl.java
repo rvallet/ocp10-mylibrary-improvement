@@ -7,6 +7,7 @@ import com.library.mslibrary.enumerated.BookReservationStatusEnum;
 import com.library.mslibrary.proxies.MicroServiceBatchProxy;
 import com.library.mslibrary.repository.BookReservationRepository;
 import com.library.mslibrary.service.BookReservationService;
+import com.library.mslibrary.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Autowired
     BookReservationRepository bookReservationRepository;
+
+    @Autowired
+    BookService bookService;
 
     @Autowired
     private ApplicationPropertiesConfig applicationPropertiesConfig;
@@ -61,16 +65,27 @@ public class BookReservationServiceImpl implements BookReservationService {
 
     @Override
     public BookReservation saveBookReservation(BookReservation bookReservation) {
-        return bookReservationRepository.save(bookReservation);
+        BookReservation result = bookReservationRepository.save(bookReservation);
+        updateBookReservationAvailable(result.getBook());
+        return result;
+    }
+
+    private void updateBookReservationAvailable(Book book) {
+        if (book != null && !computeIsReservationAvailable(book)){
+            book.setReservationAvailable(false);
+            bookService.saveBook(book);
+        }
     }
 
     @Override
     public BookReservation closeBookReservation(Long bookReservationId) {
         BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
+
         if (br != null) {
             br.setClosingDate(new Date());
             br.setReservationStatus(BookReservationStatusEnum.CLOSED.toString());
             LOGGER.info("Clôture de la réservation id {} (Status {} - Date de clôture: {})", bookReservationId, br.getReservationStatus(), br.getClosingDate());
+            updateBookReservationAvailable(br.getBook());
             return bookReservationRepository.save(br);
         } else {
             return null;
@@ -80,7 +95,7 @@ public class BookReservationServiceImpl implements BookReservationService {
     @Override
     public void changeBookReservationStatus(Long bookReservationId, String bookReservationStatus) {
         BookReservation br = bookReservationRepository.findBookReservationById(bookReservationId);
-        if (br != null) {
+        if (br != null && !br.getReservationStatus().equals(bookReservationStatus)) {
             br.setReservationStatus(bookReservationStatus);
             if (bookReservationStatus.equals(BookReservationStatusEnum.NOTIFIED.toString())) {
                 br.setNotificationDate(new Date());
@@ -88,7 +103,23 @@ public class BookReservationServiceImpl implements BookReservationService {
             if (bookReservationStatus.equals(BookReservationStatusEnum.CLOSED.toString())) {
                 br.setClosingDate(new Date());
             }
+            if (bookReservationStatus.equals(BookReservationStatusEnum.EXPIRED.toString())) {
+                br.setClosingDate(new Date());
+            }
             bookReservationRepository.save(br);
+        } else if (br == null) {
+            LOGGER.info(
+                    "Changement de statut '{}' non effectué - Pas de réservation trouvée pour l'Id {}",
+                    bookReservationStatus,
+                    bookReservationId
+            );
+        } else if (br.getReservationStatus().equals(bookReservationStatus)) {
+            LOGGER.info(
+                    "Changement de statut '{}' non effectué - La reservation trouvée est en statut {} pour l'Id {}",
+                    bookReservationStatus,
+                    br.getReservationStatus(),
+                    bookReservationId
+            );
         }
     }
 
