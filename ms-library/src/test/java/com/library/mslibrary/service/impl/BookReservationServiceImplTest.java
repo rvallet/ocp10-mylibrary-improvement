@@ -4,11 +4,13 @@ import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
+import com.library.mslibrary.repository.BookRepository;
 import com.library.mslibrary.repository.BookReservationRepository;
 
 import static com.library.mslibrary.mock.BookReservationMock.*;
 import static com.library.mslibrary.mock.BookMock.*;
 
+import com.library.mslibrary.service.BookService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -29,6 +32,9 @@ public class BookReservationServiceImplTest {
 
     @Mock
     BookReservationRepository bookReservationRepository;
+
+    @Mock
+    BookService bookService;
 
     @Mock
     private ApplicationPropertiesConfig appConfig;
@@ -107,11 +113,14 @@ public class BookReservationServiceImplTest {
     }
 
     @Test
+    @Transactional
     void closeBookReservation(){
         BookReservation br = getMockBookReservation();
 
         given(bookReservationRepository.findBookReservationById(anyLong())).willReturn(br);
         given(bookReservationRepository.save(Mockito.any(BookReservation.class))).willReturn(br);
+        given(bookService.saveBook(any(Book.class))).willReturn(br.getBook());
+        given(appConfig.getBookReservationFactorLimit()).willReturn(2);
 
         BookReservation result = bookReservationService.closeBookReservation(br.getId());
 
