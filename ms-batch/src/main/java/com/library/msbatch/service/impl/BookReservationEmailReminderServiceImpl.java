@@ -96,13 +96,13 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                 .filter(e -> isReservationNotificationDeadlineReached(e))
                 .forEach(e -> {
                     msLibraryProxy.changeBookReservationStatusToExpired(e.getBookReservationId());
-                    LOGGER.info(
+                    LOGGER.debug(
                             "Envoie d'une demande de fermeture de la réservation id {} (User: {})",
                             e.getBookReservationId(),
                             e.getUserEmail()
                     );
                     this.feedBookReservationEmailReminderRepository(e.getBookId());
-                    LOGGER.info(
+                    LOGGER.debug(
                             "Envoie d'une alimentation BDD ReservationEmailReminder pour le Book id {}",
                             e.getBookId()
                     );
