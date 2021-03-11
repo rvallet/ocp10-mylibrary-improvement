@@ -101,6 +101,11 @@ public class BookReservationEmailReminderServiceImpl implements BookReservationE
                             e.getBookReservationId(),
                             e.getUserEmail()
                     );
+                    this.feedBookReservationEmailReminderRepository(e.getBookId());
+                    LOGGER.info(
+                            "Envoie d'une alimentation BDD ReservationEmailReminder pour le Book id {}",
+                            e.getBookId()
+                    );
                 });
     }
 
