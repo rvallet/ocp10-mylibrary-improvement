@@ -2,17 +2,18 @@ package com.library.mslibrary.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.library.mslibrary.ws.controller.BookReservationController;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Table(name="book", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
+@Transactional
 public class Book implements Serializable {
 
     @Id

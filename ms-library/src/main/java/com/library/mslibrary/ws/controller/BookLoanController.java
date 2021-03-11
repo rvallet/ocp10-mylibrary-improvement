@@ -121,7 +121,7 @@ public class BookLoanController {
         }
     }
 
-    @GetMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE + "/{bookloanId}")
+    @GetMapping(value= ApiRegistration.REST_GET_NEXT_BOOKLOAN_ENDDATE + "/{bookId}")
     public String getNextBookloanEndDate(@PathVariable Long bookId) {
         String result = bookLoanService.getNextBookloanEndDate(bookId);
         if (!result.isEmpty()) {

@@ -14,7 +14,7 @@ En voici la liste :
 Un site web et une application mobile pour les usagers de la bibliothèque.
 Un logiciel pour le personnel des bibliothèques.
 Un logiciel pour des traitements automatisés (mails de relance).
-Le site web permettra aux usagers de suivre les prêts de leurs ouvrages. Il pourront :
+Le site web permettra aux usagers de suivre les prêts de leurs ouvrages. Ils pourront :
 
 Rechercher des ouvrages et voir le nombre d’exemplaires disponibles.
 Consulter leurs prêts en cours. Les prêts sont pour une période de 4 semaines.
@@ -35,38 +35,52 @@ sous la direction de Patricia, la responsable du service.
 Lors d’une mission précédente, vous avez travaillé sur un système d’information pour la bibliothèque d'une grande ville.
 
 #### Travail demandé :
-- ...
-- ...
-- ...
+Apporter des améliorations de fonctionnalités demandées par le client.
+- Ticket #1 Ajoutez un système de réservation d’ouvrages (par le client) [#1](https://github.com/rvallet/ocp10-mylibrary-improvement/issues/1)
+
+Corriger des dysfonctionnements signalés par le client sur l’application
+- Ticket #2 Corrigez un bug dans la gestion des prolongations de prêt (par le client) [#2](https://github.com/rvallet/ocp10-mylibrary-improvement/issues/2)
+
+Compléter une suite de tests unitaires et d’intégration afin de prendre en compte les modifications apportées
+- Ticket #3 Mettez en place une stratégie de tests (par le TechLead) [#3](https://github.com/rvallet/ocp10-mylibrary-improvement/issues/5)
 
 ### Livrables attendus :
-* -
-* -
-* -
+* Le code source de l’application modifiée
+* Les scripts SQL de création de la base de données avec un jeu de données de démo
+* Les scripts SQL de migration de la base de données pour passer à la nouvelle version
+* Une documentation succincte (un fichier README.md suffit) expliquant comment déployer l'application mis à jour
+* Les tickets traités (accessibles via la fonctionnalité “issue”)
 
 ## Installation & Déploiement
 
 ### Installation
 
 - Cloner les dépôts https://github.com/rvallet/ocp10-mylibrary-improvement & https://github.com/rvallet/library-config
-- Paramétrer une base de donnée MySQL en local dans les fichiers properties de library-config (port local, username, password)
+- Paramétrer une base de donnée MySQL en local dans les fichiers properties de library-config : ms-batch.properties, ms-library.properties et website.properties
+  (port local, username, password)
+  
 spring.datasource.url=jdbc:mysql://localhost:3306/library_bdd?useSSL=false&autoReconnect=true&verifyServerCertificate=false&serverTimezone=UTC
 spring.datasource.username=root
 spring.datasource.password=admin
 - Lancer un serveur local de connexion à la BDD MySQL (ex: WampServer)
-- Importer le projet complet ocp7-library dans votre IDE Java (nécéssite la présence d'un module Sprint Boot, présente par défault dans IntelliJ ou Eclipse Sprint Tools Suite 4 "STS4")
+- Importer le projet complet ocp7-library dans votre IDE Java (nécessite la présence d'un module Sprint Boot, présente par défaut dans IntelliJ ou Eclipse Sprint Tools Suite 4 "STS4")
 - Lancer cloud-config (port 8888)
 - Lancer eureka-server (port 9102) 
-- Lancer les microservices ms-batch (port 9095) et ms-library (plusieurs instances possible, ex : port 9090 & 9092 avec 'VM options = -Dserver.port=9090')
-- Au premier démarrage les microservice vont créer les table de la BDD 'library_bdd' ainsi qu'un jeu de données de tests sur la table utilisateur (supprimer les tables pour regénérer le jeu de données)
+- Lancer les microservices ms-library (ports 9090 & 9092) puis ms-batch (port 9095 & 9097). 
+  Plusieurs instances possibles, ex : ajouter 'VM options = -Dserver.port=XXXX')
+- Au premier démarrage les microservice vont créer les table de la BDD 'library_bdd' ainsi qu'un jeu de données de tests sur la table 'utilisateur' (supprimer les tables pour régénérer le jeu de données)
 - Lancer le website MyLibrary
  
- * Notes
+####Notes
  - ms-batch
         . Alimentation de la BDD avec les emprunts non-rendus arrivé à date d'échéance (chaque jour à 3:00AM)
-        lancement manuel possible => http://localhost:9095/feedBookLoanEmailReminderRepository
+        lancement manuel possible => wget "http://localhost:9095/feedBookLoanEmailReminderRepository"
         . Envoie des relances d'emprunts arrivés à échéance (chaque jour à 8:00AM)
-        lancement manuel possible => http://localhost:9095/launchBookLoanEmailReminder
+        lancement manuel possible => wget "http://localhost:9095/launchBookLoanEmailReminder"
+        . Envoie des emails de réservations aux utilisateurs en tête de liste lorsqu'un livre est disponible à nouveau
+        lancement manuel possible => wget "http://localhost:9095/launchBookReservationEmailReminder"
+        . Clô   ture automatique des réservations 48H après l'envoie de notification d'une reservation disponible 
+        lancement manuel possible => wget "http://localhost:9095/closeBookReservation"
   
 ### Déploiement
 

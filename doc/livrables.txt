@@ -1,0 +1,6 @@
+1°) Dépôts :
+Projet --> https://github.com/rvallet/ocp10-mylibrary-improvement
+Config --> https://github.com/rvallet/library-config
+
+2°) Tickets :
+https://github.com/rvallet/ocp10-mylibrary-improvement/projects/1

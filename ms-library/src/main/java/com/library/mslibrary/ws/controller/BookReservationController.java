@@ -5,17 +5,14 @@ import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
-import com.library.mslibrary.proxies.MicroServiceBatchProxy;
 import com.library.mslibrary.service.BookReservationService;
 import com.library.mslibrary.service.BookService;
 import com.library.mslibrary.ws.exception.NoSuchResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -8,16 +8,14 @@ import com.library.mslibrary.repository.BookLoanRepository;
 import com.library.mslibrary.repository.BookReservationRepository;
 import com.library.mslibrary.service.BookLoanService;
 import com.library.mslibrary.utils.DateTools;
+import com.library.mslibrary.ws.exception.NoSuchResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookLoanServiceImpl implements BookLoanService {
@@ -55,23 +53,49 @@ public class BookLoanServiceImpl implements BookLoanService {
     @Override
     public BookLoan extendBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        bl.setLoanExtended(true);
-        bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
-        bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
-        LOGGER.info("Prolongation de l'emprunt id {} (Status {} - Date de fin : {})", bookLoanId, bl.getLoanStatus(), bl.getEndLoan());
-        return bookLoanRepository.save(bl);
+        if (bookLoanId==null || bl ==null) {
+            throw new NoSuchResultException("Pas de résultat pour cet emprunt de livre "+bookLoanId);
+        }
+
+        if (isExtendable(bl)) {
+            bl.setLoanExtended(true);
+            bl.setLoanStatus(BookLoanStatusEnum.EXTENDED.toString());
+            bl.setEndLoan(DateTools.addDays(bl.getEndLoan(), appConfig.getBookLoanDuration()));
+            LOGGER.info(
+                    "Prolongation de l'emprunt id {} (Status {} - Date de fin : {})",
+                    bookLoanId,
+                    bl.getLoanStatus(),
+                    bl.getEndLoan());
+            bookLoanRepository.save(bl);
+        } else {
+            // Bug issue #2 (BookLoan could not be extend after endLoan Date)
+            LOGGER.debug(
+                    "L'emprunt id {} ne peut être prolongé après échéance (Status {} - Date de fin : {})",
+                    bookLoanId,
+                    bl.getLoanStatus(),
+                    bl.getEndLoan());
+        }
+        return bl;
+    }
+
+    private Boolean isExtendable(BookLoan bl){
+        return bl.getEndLoan().after(new Date());
     }
 
     @Override
     public BookLoan closeBookLoan(Long bookLoanId) {
         BookLoan bl = bookLoanRepository.findBookLoanById(bookLoanId);
-        bl.setReturnLoan(new Date());
-        bl.getBook().setStock(bl.getBook().getStock() +1);
-        bl.getBook().setLoanAvailable(true);
-        bl.setLoanStatus(BookLoanStatusEnum.CLOSED.toString());
-        bl.getBook().setReservationAvailable(true);
-        LOGGER.info("Clôture de l'emprunt id {} (Status {} - Date de retour : {})", bookLoanId, bl.getLoanStatus(), bl.getReturnLoan());
-        return bookLoanRepository.save(bl);
+        if (bl != null) {
+            bl.setReturnLoan(new Date());
+            bl.getBook().setStock(bl.getBook().getStock() + 1);
+            bl.getBook().setLoanAvailable(true);
+            bl.setLoanStatus(BookLoanStatusEnum.CLOSED.toString());
+            bl.getBook().setReservationAvailable(true);
+            LOGGER.info("Clôture de l'emprunt id {} (Status {} - Date de retour : {})", bookLoanId, bl.getLoanStatus(), bl.getReturnLoan());
+            return bookLoanRepository.save(bl);
+        } else {
+            return null;
+        }
     }
 
     @Override

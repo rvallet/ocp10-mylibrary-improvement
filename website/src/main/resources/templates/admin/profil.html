@@ -185,8 +185,9 @@
                                                 <form th:action="@{/admin/update-bookloan}" th:object="${bookLoan}" method="get">
                                                     <input type="hidden" name="id" th:value="${bookLoan?.id}">
                                                     <input type="hidden" name="action" th:value="loanextended">
-                                                    <button class="text-center" type="submit">Prolonger</button>
+                                                    <button class="text-center" type="submit" th:disabled="${bookLoan.endLoan.before(#dates.createNow())}">Prolonger</button>
                                                 </form>
+                                                <span th:if="${bookLoan.endLoan.before(#dates.createNow())}">Echéance à terme</span>
                                             </div>
                                         </div>
                                     </td>

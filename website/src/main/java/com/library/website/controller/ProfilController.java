@@ -92,14 +92,22 @@ public class ProfilController {
         UserBean u = msLibraryProxy.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         BookLoanBean bl = msLibraryProxy.getBookLoanById(bookLoanId);
 
-        LOGGER.debug("{} =={} --> {}", bl.getUser().getId().toString(), u.getId().toString(), bl.getUser().getId().toString().equals(u.getId().toString()));
+        LOGGER.debug(
+                "{} =={} --> {}",
+                bl.getUser().getId().toString(),
+                u.getId().toString(),
+                bl.getUser().getId().toString().equals(u.getId().toString()));
+
         if (bl.getUser().getId().toString().equals(u.getId().toString()) && "loanextended".equalsIgnoreCase(action)) {
             msLibraryProxy.extendBookLoan(bookLoanId);
             LOGGER.debug("Mise à jour de l'emprunt id {}", bookLoanId);
-        }
+            }
 
         if (!bl.getUser().getId().toString().equals(u.getId().toString())) {
-            LOGGER.warn("ALERTE ! Tentative de mise à de l'emprunt id {} par l'utilisateur {}", bookLoanId, u.getEmail());
+            LOGGER.warn(
+                    "ALERTE ! Tentative de mise à de l'emprunt id {} par l'utilisateur {}",
+                    bookLoanId,
+                    u.getEmail());
         }
 
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansByUserId(u.getId().toString());
@@ -119,7 +127,12 @@ public class ProfilController {
         if ("loanextended".equalsIgnoreCase(action)) {
             msLibraryProxy.extendBookLoan(bookLoanId);
             LOGGER.debug("Mise à jour de l'emprunt id {}", bookLoanId);
-            LOGGER.info("Mise à de l'emprunt id {} de l'utilisateur id {} par {} ({})", bookLoanId, bl.getUser().getId(), u.getEmail(), u.getRole());
+            LOGGER.info(
+                    "Mise à de l'emprunt id {} de l'utilisateur id {} par {} ({})",
+                    bookLoanId,
+                    bl.getUser().getId(),
+                    u.getEmail(),
+                    u.getRole());
         }
 
         if ("loanclosed".equalsIgnoreCase(action)) {
@@ -127,7 +140,12 @@ public class ProfilController {
             // We send a notification to ms-batch in order to warn the user who made a reservation if necessary
             msBatchProxy.sendBookAvailableNotification(bl.getBook().getId());
             LOGGER.debug("Cloture de l'emprunt id {}", bookLoanId);
-            LOGGER.info("Cloture de l'emprunt id {} de l'utilisateur id {} par {} ({})", bookLoanId, bl.getUser().getId(), u.getEmail(), u.getRole());
+            LOGGER.info(
+                    "Cloture de l'emprunt id {} de l'utilisateur id {} par {} ({})",
+                    bookLoanId,
+                    bl.getUser().getId(),
+                    u.getEmail(),
+                    u.getRole());
         }
 
         List<BookLoanBean> bookLoanList = msLibraryProxy.getBookLoansByUserId(u.getId().toString());
@@ -215,7 +233,10 @@ public class ProfilController {
         }
 
         if (book != null && user != null) {
-            LOGGER.info("Envoie d'un enregistrement de création d'emprunt du livre {} pour l'utilisateur {}", book.getTitle(), user.getEmail());
+            LOGGER.info(
+                    "Envoie d'un enregistrement de création d'emprunt du livre {} pour l'utilisateur {}",
+                    book.getTitle(),
+                    user.getEmail());
             BookLoanBean bookLoanBean = new BookLoanBean();
             bookLoanBean.setUser(user);
             bookLoanBean.setBook(book);
