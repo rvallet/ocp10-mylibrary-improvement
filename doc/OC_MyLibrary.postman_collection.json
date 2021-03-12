@@ -1,0 +1,1091 @@
+{
+	"info": {
+		"_postman_id": "cad4fb46-e267-413f-bc09-2b3d211a7255",
+		"name": "OC_MyLibrary",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ms-batch",
+			"item": [
+				{
+					"name": "BookLoanJobs",
+					"item": [
+						{
+							"name": "JOB feedBookLoanEmailReminderRepository (Get - NoProxy)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9095/feedBookLoanEmailReminderRepository",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9095",
+									"path": [
+										"feedBookLoanEmailReminderRepository"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "JOB launchBookLoanEmailReminder (Get - NoProxy)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9095/launchBookLoanEmailReminder",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9095",
+									"path": [
+										"launchBookLoanEmailReminder"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "BookReservationJobs",
+					"item": [
+						{
+							"name": "JOB launchBookReservationEmailReminder (Get - NoProxy)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9095/launchBookReservationEmailReminder",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9095",
+									"path": [
+										"launchBookReservationEmailReminder"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "JOB closeBookReservation (Get - NoProxy)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9095/closeBookReservation",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9095",
+									"path": [
+										"closeBookReservation"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "ms-library",
+			"item": [
+				{
+					"name": "Book",
+					"item": [
+						{
+							"name": "getBookList()",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre de livres = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.above(9);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des Titres\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"title\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/booksList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"booksList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getSearchCriteriaList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre de citères = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(3);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du critère 1\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"par auteur\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du critère 2\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"par titre\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du critère 3\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"par collection\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getSearchCriteriaList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getSearchCriteriaList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getBookById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des isbn\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"isbn\");\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('id = ' + data.id, function () {\r",
+											"    pm.expect(data.id).to.equal(1);\r",
+											"});\r",
+											"\r",
+											"pm.test('isbn = ' + data.isbn, function () {\r",
+											"    pm.expect(data.isbn).to.equal(\"isbn1\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9090/findBookById/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"findBookById",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "isbn1",
+											"description": "{String isbn}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getBookByIsbn",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des isbn\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"isbn\");\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('id = ' + data.id, function () {\r",
+											"    pm.expect(data.id).to.equal(1);\r",
+											"});\r",
+											"\r",
+											"pm.test('isbn = ' + data.isbn, function () {\r",
+											"    pm.expect(data.isbn).to.equal(\"isbn1\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9090/getBookByIsbn/isbn1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getBookByIsbn",
+										"isbn1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "isbn1",
+											"description": "{String isbn}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "BookLoan",
+					"item": [
+						{
+							"name": "findBookLoansListByUserId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre d\\'emprunt = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(2);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/findBookLoansListByUserId/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"findBookLoansListByUserId",
+										"1"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findBookLoansList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre d\\'emprunt total = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(6);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getBookLoansList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getBookLoansList"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findBookLoanById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence de l'ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du user\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"user\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du livre\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"book\");\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test('Emprunt id = ' + data.id, function () {\r",
+											"    pm.expect(data.id).to.equal(3);\r",
+											"});\r",
+											"\r",
+											"pm.test('User id = ' + data.user.id, function () {\r",
+											"    pm.expect(data.user.id).exist;\r",
+											"});\r",
+											"\r",
+											"pm.test('Book id = ' + data.book.id, function () {\r",
+											"    pm.expect(data.book.id).exist;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/bookLoan/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"bookLoan",
+										"3"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getNextBookloanEndDate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test('Prochaine date de fin = ' + pm.response.text(), function () {\r",
+											"    pm.expect(pm.response.text().toString).equals(\"01/04/2021\".toString);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getNextBookloanEnddate/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getNextBookloanEnddate",
+										"1"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "BookReservation",
+					"item": [
+						{
+							"name": "findBookReservationsListByUserId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre de réservations = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(2);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/findBookReservationsListByUserId/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"findBookReservationsListByUserId",
+										"4"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findBookReservationsList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre d\\'emprunt = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(6);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getBookReservationsList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getBookReservationsList"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getNbCurrentBookReservations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre de réservation = ' + pm.response.text(), function () {\r",
+											"    pm.expect(pm.response.text()).equals(\"2\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getNbCurrentBookReservations/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getNbCurrentBookReservations",
+										"2"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "getUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre d\\'utilisateurs = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.above(5);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getPaginatedUsers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre d\\'utilisateurs sur la page inférieur à 10 = ' + data.content.length, function () {\r",
+											"    pm.expect(data.content.length).to.below(11);\r",
+											"});\r",
+											"\r",
+											"pm.test('numberOfElements = ' + data.numberOfElements, function () {\r",
+											"    pm.expect(data.numberOfElements).to.equals(data.content.length);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/users/page/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"users",
+										"page",
+										"2"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getUserByEmail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test('id = ' + data.id, function () {\r",
+											"    pm.expect(data.id).to.equal(1);\r",
+											"});\r",
+											"\r",
+											"pm.test('email = ' + data.email, function () {\r",
+											"    pm.expect(data.email).to.equal(\"email@user1.fr\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/findUserByEmail/email@user1.fr",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"findUserByEmail",
+										"email@user1.fr"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getUserById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence des ID\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('id = ' + data.id, function () {\r",
+											"    pm.expect(data.id).to.equal(1);\r",
+											"});\r",
+											"\r",
+											"pm.test('email = ' + data.email, function () {\r",
+											"    pm.expect(data.email).to.equal(\"email@user1.fr\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getUserById/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getUserById",
+										"1"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getRoleList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Temps de réponse inférieur à 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"HTML Status code de la réponse à 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data = pm.response.json();\r",
+											"pm.test('Nombre de roles = ' + data.length, function () {\r",
+											"    pm.expect(data.length).to.equal(2);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du rôle user\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"user\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Présence du admin\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"admin\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/getRoleList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"getRoleList"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "1",
+											"description": "{userId}",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

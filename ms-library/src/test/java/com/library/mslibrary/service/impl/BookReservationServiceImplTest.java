@@ -4,7 +4,6 @@ import com.library.mslibrary.config.ApplicationPropertiesConfig;
 import com.library.mslibrary.entities.Book;
 import com.library.mslibrary.entities.BookReservation;
 import com.library.mslibrary.enumerated.BookReservationStatusEnum;
-import com.library.mslibrary.repository.BookRepository;
 import com.library.mslibrary.repository.BookReservationRepository;
 
 import static com.library.mslibrary.mock.BookReservationMock.*;
